@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ImageUploadController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,5 +40,15 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function() {
     Route::patch('/user', [UserController::class, 'updateActive'])->name('user.update');
 
 });
+Route::post('upload/images', [ImageUploadController::class, 'uploadImages']);
+Route::get('/test', function () {
+    return 'no';
+});
+
+// Route::middleware('auth')->post('upload/images', [ImageUploadController::class, 'uploadImages']);
+Route::get('/csrf-token', function () {
+    return response()->json(['csrf_token' => csrf_token()]);
+});
+
 
 require __DIR__.'/auth.php'; 
