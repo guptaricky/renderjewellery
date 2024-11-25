@@ -38,12 +38,16 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function() {
     Route::get('/user', [UserController::class, 'create'])->name('user.create');
     Route::post('/user', [UserController::class, 'store'])->name('user.store');
     Route::patch('/user', [UserController::class, 'updateActive'])->name('user.update');
+    Route::get('/user/details/{id}', [UserController::class, 'userDetails'])->where('id', '[0-9]+')->name('user.details');
+
 
 });
 
 // Image upload route
 Route::post('upload/images', [ImageUploadController::class, 'uploadImages']);
-
+Route::get('/test', function () {
+    return 'no';
+});
 // Get csrf token from this 
 Route::get('/csrf-token', function () {
     return response()->json(['csrf_token' => csrf_token()]);

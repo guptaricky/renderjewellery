@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
+use App\Models\RoleUser;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +21,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        $roles = Role::whereNotin('name' , ['Admin','SuperAdmin'])->orderBy('created_at','DESC')->get();
+        return view('auth.register',['roles' => $roles]);
     }
 
     /**
@@ -31,6 +34,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'role' => ['required', 'integer', 'max:10'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -38,7 +42,13 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'plan_id' => 1,
             'password' => Hash::make($request->password),
+        ]);
+
+        $roleUser = RoleUser::create([
+            'user_id' => $user->id,
+            'role_id' => $request->role,
         ]);
 
         event(new Registered($user));

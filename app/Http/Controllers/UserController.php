@@ -36,6 +36,20 @@ class UserController extends Controller
         ]);
     }
 
+    public function userDetails($id)
+    {
+        $user = User::with('roles', 'plan')
+        ->where('id', $id)
+        ->first();
+        if (!$user) {
+            return back()->withErrors('User not found.');
+        }
+
+        return view('users/details',[
+            'user' => $user
+        ]);
+    }
+
     public function store(Request $request){
         
         $rules = [
