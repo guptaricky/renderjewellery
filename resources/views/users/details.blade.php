@@ -82,10 +82,11 @@
                         <div class="active tab-pane" id="activity">
                           <!-- The timeline -->
                           <div class="timeline timeline-inverse">
+                            @foreach($uploaded_designes as $index => $uploaded_designe)
                             <!-- timeline time label -->
                             <div class="time-label">
                               <span class="bg-danger">
-                                20 Nov. 2024
+                                {{ date("d M Y",strtotime($uploaded_designe->created_at)) }}
                               </span>
                             </div>
                             <!-- /.timeline-label -->
@@ -94,15 +95,13 @@
                               <i class="fas fa-camera bg-purple"></i>
       
                               <div class="timeline-item">
-                                <span class="time"><i class="far fa-clock"></i> 12:05</span>
+                                <span class="time"><i class="far fa-clock"></i> {{ date("h:i: a",strtotime($uploaded_designe->created_at)) }}</span>
       
                                 <h3 class="timeline-header"><a href="#">Uploaded</a> 50 new Designs</h3>
       
                                 <div class="timeline-body">
-                                  Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                                  weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                                  jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-                                  quora plaxo ideeli hulu weebly balihoo...
+                                  
+                                  {{ $uploaded_designe->description }}...
                                 </div>
                                 <div class="timeline-footer">
                                   <a href="#" class="btn btn-primary btn-sm">View All</a>
@@ -110,7 +109,7 @@
                               </div>
                             </div>
                             <!-- END timeline item -->
-                            
+                            @endforeach
                            
                             <!-- timeline time label -->
                             <div class="time-label">

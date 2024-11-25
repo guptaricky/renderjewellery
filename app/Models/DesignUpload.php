@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Image extends Model
+class DesignUpload extends Model
 {
     use HasFactory;
 
     // Specify the table name (not required if it follows Laravel's naming convention)
-    protected $table = 'images';
+    protected $table = 'design_upload';
 
     // Define the mass-assignable attributes
     protected $fillable = [

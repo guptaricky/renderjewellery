@@ -42,12 +42,10 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function() {
 
 
 });
+Route::post('upload/design', [ImageUploadController::class, 'uploadDesign']);
 
-// Image upload route
-Route::post('upload/images', [ImageUploadController::class, 'uploadImages']);
-Route::get('/test', function () {
-    return 'no';
-});
+
+
 // Get csrf token from this 
 Route::get('/csrf-token', function () {
     return response()->json(['csrf_token' => csrf_token()]);
