@@ -19,6 +19,23 @@
                   </div>
                 </div>
                 <div class="input-group mb-3">
+                 
+                  
+                  <div class="input-group">
+                    <select name="role" id="role" class="form-control form-select" id="inputGroupSelect02" >
+                        @foreach($roles as $index => $role)
+                        <option value={{ $role->id }}>{{ $role->name }}</option>
+                        @endforeach
+                        </select>
+                        <div class="input-group-append">
+                          <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                          </div>
+                        </div>
+                </div>
+
+                </div>
+                <div class="input-group mb-3">
                   <input type="email" id="email" class="form-control" placeholder="Email" name="email" value="{{old('email')}}" required autocomplete="username" />
                   <div class="input-group-append">
                     <div class="input-group-text">

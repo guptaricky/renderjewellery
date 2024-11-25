@@ -71,7 +71,9 @@
                                         {{ $user->plan['name']}}
                                         @else NA @endif
                                     </td>
-                                    <td><button type="button" class="btn btn-sm btn-outline-info btn-sm">Manage Profile</button></td>   
+                                    <td><a href="{{ route('user.details', ['id' => $user->id]) }}">
+                                      <button type="button" class="btn btn-sm btn-outline-info">View Details</button>
+                                  </a></td>   
                                   </tr>
                                 @endforeach
                                 </tbody>
