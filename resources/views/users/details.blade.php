@@ -57,7 +57,7 @@
                                         @else NA @endif</a>
                         </li>
                         <li class="list-group-item">
-                          <b>Uploads</b> <a class="float-right">13,287</a>
+                          <b>Uploads</b> <a class="float-right">{{ $design_count}}</a>
                         </li>
                       </ul>
       
@@ -95,16 +95,18 @@
                               <i class="fas fa-camera bg-purple"></i>
       
                               <div class="timeline-item">
-                                <span class="time"><i class="far fa-clock"></i> {{ date("h:i: a",strtotime($uploaded_designe->created_at)) }}</span>
+                                <span class="time"><i class="far fa-clock"></i> {{ \Carbon\Carbon::parse($uploaded_designe->created_at)->setTimezone('Asia/Kolkata')->format('H:i a') }}</span>
       
-                                <h3 class="timeline-header"><a href="#">Uploaded</a> 50 new Designs</h3>
+                                <h3 class="timeline-header"><a href="#">Uploaded</a> {{ $uploaded_designe->design_count }} new Designs</h3>
       
                                 <div class="timeline-body">
                                   
                                   {{ $uploaded_designe->description }}...
                                 </div>
                                 <div class="timeline-footer">
-                                  <a href="#" class="btn btn-primary btn-sm">View All</a>
+                                  <a href="#" class="btn btn-primary btn-sm"><a href="{{ route('user.designDetails', ['id' => $user->id,'upload_id' => $uploaded_designe->id]) }}">
+                                    <button type="button" class="btn btn-sm btn-outline-info">View All</button>
+                                </a></a>
                                 </div>
                               </div>
                             </div>
@@ -138,24 +140,7 @@
       
       
                         </div>
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="changePassword">
-                          
-                          
-                        </div>
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="deleteAccount">
-                          <p>
-                            Once your account is deleted, all of its resources and data will be permanently deleted.
-                           Before deleting your account, please download any data or information that you wish to retain.
-                          </p>
-                          <button type="button" class="btn btn-flat btn-danger" data-toggle="modal" data-target="#modal-lg">
-                            {{ __('Delete Account') }}
-                          </button>
-
-                          
-                        </div>
-                        <!-- /.tab-pane -->
+                       
                         
                       </div>
                       <!-- /.tab-content -->

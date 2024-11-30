@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Designs;
 use App\Models\DesignUpload;
 use App\Models\User;
 use App\Models\Role;
@@ -48,13 +49,45 @@ class UserController extends Controller
         ->orderBy('created_at','desc')
         ->get();
 
+        $design_count = DesignUpload::where('user_id', $id)
+        ->sum('design_count');
+
         if (!$user) {
             return back()->withErrors('User not found.');
         }
 
         return view('users/details',[
             'user' => $user,
-            'uploaded_designes' => $uploaded_designes
+            'uploaded_designes' => $uploaded_designes,
+            'design_count' => $design_count
+        ]);
+    }
+
+    public function designDetails($id,$upload_id)
+    {
+        $user = User::with('roles', 'plan')
+        ->where('id', $id)
+        ->first();
+
+        $uploaded_designes = DesignUpload::where('user_id', $id)->where('id', $upload_id)
+        ->orderBy('created_at','desc')
+        ->first();
+
+        // dd($uploaded_designes);
+
+        $designes = Designs::where('design_upload_id', $upload_id)
+        ->orderBy('created_at','desc')
+        ->get();
+
+
+        if (!$user) {
+            return back()->withErrors('User not found.');
+        }
+
+        return view('users/designDetails',[
+            'user' => $user,
+            'uploaded_designes' => $uploaded_designes,
+            'designes' => $designes
         ]);
     }
 

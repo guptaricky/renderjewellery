@@ -39,6 +39,7 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function() {
     Route::post('/user', [UserController::class, 'store'])->name('user.store');
     Route::patch('/user', [UserController::class, 'updateActive'])->name('user.update');
     Route::get('/user/details/{id}', [UserController::class, 'userDetails'])->where('id', '[0-9]+')->name('user.details');
+    Route::get('/user/designDetails/{id}/{upload_id}', [UserController::class, 'designDetails'])->where('id', '[0-9]+')->name('user.designDetails');
 
 
 });

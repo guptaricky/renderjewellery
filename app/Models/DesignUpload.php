@@ -14,7 +14,9 @@ class DesignUpload extends Model
 
     // Define the mass-assignable attributes
     protected $fillable = [
-        'file_name', 'image_data',
+        'user_id',
+        'description',
+        'design_count'
     ];
 
     // Disable timestamps if not required (optional)
