@@ -18,7 +18,7 @@ class CreateDesignUploadTable extends Migration
         });
 
         // Modify the image_data column to be LONGBLOB
-        DB::statement('ALTER TABLE design_upload MODIFY image_data LONGBLOB');
+        // DB::statement('ALTER TABLE design_upload MODIFY image_data LONGBLOB');
     }
 
     public function down()
