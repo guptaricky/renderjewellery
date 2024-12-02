@@ -18,36 +18,51 @@ class UserController extends Controller
         $roleFilter = $request->query('role', '');  // Default to empty if not present
         $searchtext = $request->query('searchtext', '');  // Default to empty if not present
 
-        $authUser = Auth::user();
+        $authUser = Auth::user();  // Get the currently logged-in user
 
-        $users = User::with('roles', 'plan')
-            ->when($authUser->hasRole('SuperAdmin') || $authUser->hasRole('Admin'), function ($query) use ($authUser, $roleFilter, $searchtext) {
-                if ($authUser->hasRole('SuperAdmin')) {
-                    $query->where('id', '!=', $authUser->id);
-                }
+        // Build base query for roles
+        $rolesQuery = Role::query();
+        if ($authUser->hasRole('Admin')) {
+            $rolesQuery->whereNotIn('name', ['SuperAdmin', 'Admin']);
+        }
+        if ($authUser->hasRole('SuperAdmin')) {
+            $rolesQuery->where('name', '!=', 'SuperAdmin');
+        }
+        $roles = $rolesQuery->get();  // Fetch the roles
 
-                if ($authUser->hasRole('Admin')) {
-                    $query->whereDoesntHave('roles', function ($roleQuery) {
-                        $roleQuery->whereIn('name', ['SuperAdmin', 'Admin']);
-                    });
-                }
+        // Build the base query for users
+        $usersQuery = User::with('roles', 'plan');
 
-                if ($roleFilter != '') {
-                    $query->whereHas('roles', function ($roleQuery) use ($roleFilter) {
-                        $roleQuery->where('name', $roleFilter);
-                    });
-                }
+        // Filter out the logged-in user or SuperAdmins/Admins based on roles
+        if ($authUser->hasRole('SuperAdmin')) {
+            $usersQuery->where('id', '!=', $authUser->id);  // Exclude SuperAdmin itself
+        }
 
-                if ($searchtext != '') {
-                    $query->where(function ($query) use ($searchtext) {
-                        $query->where('name', 'like', '%' . $searchtext . '%')
-                            ->orWhere('email', 'like', '%' . $searchtext . '%');
-                    });
-                }
-            })
-            ->get();
+        if ($authUser->hasRole('Admin')) {
+            $usersQuery->whereDoesntHave('roles', function ($roleQuery) {
+                $roleQuery->whereIn('name', ['SuperAdmin', 'Admin']);
+            });  // Exclude SuperAdmins and Admins for Admin users
+        }
 
-        $roles = Role::all(); // Fetch all roles
+        // Apply role filter if selected
+        if ($roleFilter !== '') {
+            $usersQuery->whereHas('roles', function ($roleQuery) use ($roleFilter) {
+                $roleQuery->where('name', $roleFilter);
+            });
+        }
+
+        // Apply search text filter if entered
+        if ($searchtext !== '') {
+            $usersQuery->where(function ($query) use ($searchtext) {
+                $query->where('name', 'like', '%' . $searchtext . '%')
+                    ->orWhere('email', 'like', '%' . $searchtext . '%');
+            });
+        }
+
+        // Execute the query to get filtered users
+        $users = $usersQuery->get();
+
+        // Pass the data to the view
         return view('users.usersList', [
             'users' => $users,
             'roles' => $roles,  // Pass roles to the view
@@ -55,6 +70,8 @@ class UserController extends Controller
             'searchtext' => $searchtext
         ]);
     }
+
+
 
     public function userDetails($id)
     {
