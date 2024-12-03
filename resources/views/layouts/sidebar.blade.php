@@ -45,7 +45,7 @@
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
               <p>
-                Plans
+                MASTERS
                 <i class="fas fa-angle-left right"></i>
                 <span class="badge badge-info right">6</span>
               </p>
@@ -54,7 +54,7 @@
               <li class="nav-item">
                 <a href="{{ route('plan.create') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Create Plan</p>
+                  <p>Plan</p>
                 </a>
               </li>
             </ul>
