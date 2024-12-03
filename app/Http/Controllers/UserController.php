@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Designs;
-use App\Models\DesignUpload;
+use App\Models\Product;
+use App\Models\ProductDesign;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Plans;
@@ -45,11 +45,12 @@ class UserController extends Controller
         ->where('id', $id)
         ->first();
 
-        $uploaded_designes = DesignUpload::where('user_id', $id)
+        $uploaded_designes = Product::with('productdesign')
+        ->where('user_id', $id)
         ->orderBy('created_at','desc')
         ->get();
-
-        $design_count = DesignUpload::where('user_id', $id)
+        // dd($uploaded_designes);
+        $design_count = Product::where('user_id', $id)
         ->sum('design_count');
 
         if (!$user) {
@@ -69,13 +70,13 @@ class UserController extends Controller
         ->where('id', $id)
         ->first();
 
-        $uploaded_designes = DesignUpload::where('user_id', $id)->where('id', $upload_id)
+        $uploaded_designes = Product::where('user_id', $id)->where('id', $upload_id)
         ->orderBy('created_at','desc')
         ->first();
 
         // dd($uploaded_designes);
 
-        $designes = Designs::where('design_upload_id', $upload_id)
+        $designes = ProductDesign::where('product_id', $upload_id)
         ->orderBy('created_at','desc')
         ->get();
 

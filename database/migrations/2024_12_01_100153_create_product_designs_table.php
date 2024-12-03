@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('designs', function (Blueprint $table) {
+        Schema::create('product_designs', function (Blueprint $table) {
             $table->id();
-            $table->integer('design_upload_id'); // reference upload id
+            $table->integer('product_id'); // reference upload id
             $table->string('file_name'); // File name for reference
             $table->string('file_path'); // File path for reference
             $table->string('mime_type'); // Mime Type for reference
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('designs');
+        Schema::dropIfExists('product_designs');
     }
 };
