@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->string('name',50)->unique();
             $table->string('code',10)->unique();
+            $table->tinyInteger('isActive');
             $table->timestamps();
         });
     }

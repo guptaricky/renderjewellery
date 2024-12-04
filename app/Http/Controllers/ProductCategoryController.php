@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductCategoryController extends Controller
 {
-    public function index()
+    public function create()
     {
         $categories = ProductCategory::where('isActive', 1)->orderBy('created_at', 'DESC')->get();
         return view('masters/productCategory', [
@@ -25,7 +25,7 @@ class ProductCategoryController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
-            return redirect()->route('productCategories.index')->withInput()->withErrors($validator);
+            return redirect()->route('productCategories.create')->withInput()->withErrors($validator);
         }
 
         ProductCategory::create([
@@ -34,7 +34,7 @@ class ProductCategoryController extends Controller
             'isActive' => 1,
         ]);
 
-        return redirect()->route('productCategories.index')->with('success', 'Product category created successfully');
+        return redirect()->route('productCategories.create')->with('success', 'Product category created successfully');
     }
 
     public function updateActive($id, Request $request)
