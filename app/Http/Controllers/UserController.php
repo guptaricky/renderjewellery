@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Orders;
 use App\Models\Product;
 use App\Models\ProductDesign;
 use App\Models\User;
@@ -9,6 +10,7 @@ use App\Models\Role;
 use App\Models\Plans;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -83,7 +85,23 @@ class UserController extends Controller
         ->where('user_id', $id)
         ->orderBy('created_at','desc')
         ->get();
-        // dd($uploaded_designes);
+
+        $purchased_designes = Orders::with('items')
+        ->where('user_id', $id)
+        ->orderBy('created_at','desc')
+        ->get();
+
+         // dd($uploaded_designes);
+         $design_count = Product::where('user_id', $id)
+         ->sum('design_count');
+
+        // $createdProducts = Product::where('user_id', $id)
+        //     ->withCount(['orderItems as purchased_quantity' => function ($query) {
+        //         $query->select(DB::raw('SUM(quantity)'));
+        //     }])
+        //     ->get();
+
+        // dd($createdProducts);
         $design_count = Product::where('user_id', $id)
         ->sum('design_count');
 
@@ -91,9 +109,12 @@ class UserController extends Controller
             return back()->withErrors('User not found.');
         }
 
+        $uploaded_designes = array_merge($uploaded_designes->toArray(),$purchased_designes->toArray());
+        // dd($uploaded_designes);
         return view('users/details', [
             'user' => $user,
             'uploaded_designes' => $uploaded_designes,
+            // 'purchased_designes' => $purchased_designes,
             'design_count' => $design_count
         ]);
     }
