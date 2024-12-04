@@ -57,7 +57,7 @@
                                         @else NA @endif</a>
                         </li>
                         <li class="list-group-item">
-                          <b>Uploads</b> <a class="float-right">13,287</a>
+                          <b>Uploads</b> <a class="float-right">{{ $design_count}}</a>
                         </li>
                       </ul>
       
@@ -82,56 +82,96 @@
                         <div class="active tab-pane" id="activity">
                           <!-- The timeline -->
                           <div class="timeline timeline-inverse">
+                            @foreach($uploaded_designes as $index => $uploaded_designe)
                             <!-- timeline time label -->
                             <div class="time-label">
                               <span class="bg-danger">
-                                20 Nov. 2024
+                                {{ date("d M Y",strtotime($uploaded_designe['created_at'])) }}
                               </span>
                             </div>
                             <!-- /.timeline-label -->
                             <!-- timeline item -->
-                            <div>
-                              <i class="fas fa-camera bg-purple"></i>
-      
-                              <div class="timeline-item">
-                                <span class="time"><i class="far fa-clock"></i> 12:05</span>
-      
-                                <h3 class="timeline-header"><a href="#">Uploaded</a> 50 new Designs</h3>
-      
-                                <div class="timeline-body">
-                                  Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                                  weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                                  jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-                                  quora plaxo ideeli hulu weebly balihoo...
-                                </div>
-                                <div class="timeline-footer">
-                                  <a href="#" class="btn btn-primary btn-sm">View All</a>
-                                </div>
-                              </div>
-                            </div>
-                            <!-- END timeline item -->
-                            
                            
-                            <!-- timeline time label -->
-                            <div class="time-label">
-                              <span class="bg-success">
-                                18 Nov. 2024
-                              </span>
-                            </div>
-                            <!-- /.timeline-label -->
-                            <!-- timeline item -->
+                            @if ( isset($uploaded_designe['order_number']) )
                             <div>
                               <i class="fas fa-credit-card bg-purple"></i>
       
                               <div class="timeline-item">
                                 <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
       
-                                <h3 class="timeline-header"><a href="#">Purchased</a> 5 Designes</h3>
-      
+                                <h3 class="timeline-header"><a href="#">Purchased</a> a Design</h3>
+
+                                <div class="timeline-body">
+
+
+                                  <h5 class="mt-4 mb-2">Description</h5>
+                                  {{ $uploaded_designe['order_number'] }}
+                                  
+                                </div>
                              
                               </div>
                             </div>
+                            
+                            @else
+                            <div>
+                              <i class="fas fa-camera bg-purple"></i>
+      
+                              <div class="timeline-item">
+                                <span class="time"><i class="far fa-clock"></i> {{ \Carbon\Carbon::parse($uploaded_designe['created_at'])->setTimezone('Asia/Kolkata')->format('H:i a') }}</span>
+      
+                                <h3 class="timeline-header"><a href="#">Uploaded</a> a new Design</h3>
+      
+                                <div class="timeline-body">
+
+                                  <div class="card card-primary">
+
+                                    <div class="card-header">
+                                      <h4 class="card-title">{{ $uploaded_designe['title'] }}</h4>
+                                    </div>
+
+                                    <div class="card-body">
+                                      <div>
+                                        <div class="filter-container p-0 row">
+                                          @foreach ($uploaded_designe['productdesign'] as $design)
+                                            <div class="filtr-item col-sm-2" data-category="1" data-sort="white sample">
+                                              <a href="{{ Vite::asset('storage/app/public/').$design['file_path'] }}" data-toggle="lightbox" data-title="sample 1 - white">
+                                                <img class="img-fluid mb-3" src="{{ Vite::asset('storage/app/public/').$design['file_path'] }}" class="img-fluid mb-2" alt="white sample">
+                                              </a>
+                                            </div>
+                                          @endforeach
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                  </div>
+
+                                  <h5 class="mt-4 mb-2">Description</h5>
+                                  {{ $uploaded_designe['description'] }}
+
+                                  <p class="mt-4">
+                                    <a href="#" class="link-black text-sm mr-2"><i class="fas fa-tag mr-1"></i> Price: {{ $uploaded_designe['category_id'] }}</a>
+                                    <a href="#" class="link-black text-sm mr-2"><i class="fas fa-users-class mr-1"></i> Category: {{ $uploaded_designe['category_id'] }}</a>
+                                    <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Code: {{ $uploaded_designe['subcategory_id'] }}</a>
+                                    <span class="float-right">
+                                      <a href="#" class="link-black text-sm">
+                                        <i class="far fa-comments mr-1"></i> Designed By :  {{ $uploaded_designe['designer_name'] }}
+                                      </a>
+                                    </span>
+                                  </p>
+                                  
+                                </div>
+                                {{-- <div class="timeline-footer">
+                                  <a href="{{ route('user.designDetails', ['id' => $user->id,'upload_id' => $uploaded_designe->id]) }}" class="btn btn-primary btn-sm">
+                                    View All
+                                  </a>
+                                </div> --}}
+                                
+                              </div>
+                              
+                            </div>
+                            @endif
                             <!-- END timeline item -->
+                            @endforeach
                             <div>
                               <i class="far fa-clock bg-gray"></i>
                             </div>
@@ -139,24 +179,7 @@
       
       
                         </div>
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="changePassword">
-                          
-                          
-                        </div>
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="deleteAccount">
-                          <p>
-                            Once your account is deleted, all of its resources and data will be permanently deleted.
-                           Before deleting your account, please download any data or information that you wish to retain.
-                          </p>
-                          <button type="button" class="btn btn-flat btn-danger" data-toggle="modal" data-target="#modal-lg">
-                            {{ __('Delete Account') }}
-                          </button>
-
-                          
-                        </div>
-                        <!-- /.tab-pane -->
+                       
                         
                       </div>
                       <!-- /.tab-content -->
@@ -214,4 +237,20 @@
         <!-- /.modal-dialog -->
       </div>
       <!-- /.modal -->
+      <script>
+        $(function () {
+          $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            $(this).ekkoLightbox({
+              alwaysShowClose: true
+            });
+          });
+      
+          $('.filter-container').filterizr({gutterPixels: 3});
+          $('.btn[data-filter]').on('click', function() {
+            $('.btn[data-filter]').removeClass('active');
+            $(this).addClass('active');
+          });
+        })
+      </script>
 </x-app-layout>

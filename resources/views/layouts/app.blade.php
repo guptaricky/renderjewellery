@@ -12,6 +12,7 @@
         
         @vite([
             'public/plugins/fontawesome-free/css/all.min.css',
+            'public/plugins/ekko-lightbox/ekko-lightbox.css',
             'public/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css',
             'public/plugins/icheck-bootstrap/icheck-bootstrap.min.css',
             'public/plugins/jqvmap/jqvmap.min.css',
@@ -57,6 +58,8 @@
             'public/plugins/summernote/summernote-bs4.min.js',
             'public/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js',
             'public/dist/js/adminlte.js',
+            'public/plugins/ekko-lightbox/ekko-lightbox.min.js',
+            'public/plugins/filterizr/jquery.filterizr.min.js',
             'public/dist/js/demo.js',
             'public/dist/js/pages/dashboard.js'
             ])
