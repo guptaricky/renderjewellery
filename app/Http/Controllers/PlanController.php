@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Plans;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -12,7 +13,20 @@ class PlanController extends Controller
    
     public function create()
     {
-        $plans = Plans::where('isActive', 1)->orderBy('created_at','DESC')->get();
+        // $plans = Plans::where('isActive', 1)->orderBy('created_at','DESC')->get();
+        $totalUsers = User::count();
+        $plans = Plans::withCount('users')
+        ->get()
+        ->map(function ($plan) use ($totalUsers) {
+            $percentage = $totalUsers > 0 ? ($plan->users_count / $totalUsers) * 100 : 0;
+            return [
+                'plan_name' => $plan->name,
+                'plan_code' => $plan->code,
+                'users_count' => $plan->users_count,
+                'percentage' => round($percentage, 2),
+            ];
+        });
+
         return view('masters/plan',[
             'plans' => $plans
         ]);

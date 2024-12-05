@@ -90,14 +90,14 @@
                                 @foreach($plans as $index => $plan)
                                   <tr>
                                     <td>{{ $index + 1 }}.</td>
-                                    <td>{{ $plan->name }}</td>
+                                    <td>{{ $plan['plan_name'] }}</td>
                                     <td>
                                       <div class="progress progress-xs">
-                                        <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                                        <div class="progress-bar progress-bar-danger" style="width: {{ $plan['percentage']}}%"></div>
                                       </div>
                                     </td>
-                                    <td><span class="badge bg-danger">55%</span></td>
-                                    <td>{{ $plan->code }}</td>
+                                    <td><span class="badge bg-danger">{{ $plan['percentage']}}%</span></td>
+                                    <td>{{ $plan['plan_code'] }}</td>
                                   </tr>
                                 @endforeach
                                 </tbody>

@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ImageUploadController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,8 +26,9 @@ Route::group([
         Route::post('refresh', [AuthController::class,'refresh']);
         Route::post('me', [AuthController::class,'me']);
         Route::post('logout', [AuthController::class,'logout']);
-        Route::post('upload/design', [ImageUploadController::class, 'uploadDesign']);
+        Route::post('products/create', [ProductController::class, 'createProduct']);
 
         //orders
         Route::post('/orders', [OrderController::class, 'createOrder']);
+
 });

@@ -1,19 +1,20 @@
 <?php
 
+use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ImageUploadController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard/admin', [Dashboard::class, 'adminDashboard'])->middleware(['auth', 'verified'])->name('dashboard.admin');
+Route::get('/dashboard/user', [Dashboard::class, 'userDashboard'])->middleware(['auth', 'verified'])->name('dashboard.user');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -40,10 +41,13 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function() {
     Route::patch('/user', [UserController::class, 'updateActive'])->name('user.update');
     Route::get('/user/details/{id}', [UserController::class, 'userDetails'])->where('id', '[0-9]+')->name('user.details');
     Route::get('/user/designDetails/{id}/{upload_id}', [UserController::class, 'designDetails'])->where('id', '[0-9]+')->name('user.designDetails');
-
+    Route::get('/orders/orderList', [OrderController::class, 'orderList'])->name('orders.orderList');
+    Route::get('/products/productList', [ProductController::class, 'productList'])->name('products.productList');
 
 });
-Route::post('upload/design', [ImageUploadController::class, 'uploadDesign']);
+
+
+Route::post('products/create', [ProductController::class, 'createProduct']);
 
 
 

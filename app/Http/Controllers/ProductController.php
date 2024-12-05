@@ -8,10 +8,21 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\View\View;
 
-class ImageUploadController extends Controller
+class ProductController extends Controller
 {
-    public function uploadDesign(Request $request)
+    public function productList(Request $request): View
+    {
+        $products = Product::orderBy('created_at','DESC')->get();
+      
+        return view('products.productList', [
+            'user' => $request->user(),
+            'products' => $products
+        ]);
+    }
+
+    public function createProduct(Request $request)
     {
         // Validate input files
         $validator = Validator::make($request->all(), [
@@ -44,7 +55,7 @@ class ImageUploadController extends Controller
         $uploadedImages = [];
 
         $product = new Product();
-        $product->user_id = 1; // Use the authenticated user's ID // $user_id = Auth::user()->id;
+        $product->user_id = 2; // Use the authenticated user's ID // $user_id = Auth::user()->id;
         $product->title = $request->title; 
         $product->description = $request->description; 
         $product->short_description = $request->short_description; 

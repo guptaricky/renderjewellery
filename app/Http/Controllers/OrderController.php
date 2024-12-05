@@ -88,4 +88,12 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    public function orderList()
+    {
+        $orders = Orders::with('user')->orderBy('created_at','DESC')->get();
+        return view('orders/orderList',[
+            'orders' => $orders
+        ]);
+    }
 }

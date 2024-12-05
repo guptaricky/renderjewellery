@@ -73,8 +73,6 @@ class UserController extends Controller
         ]);
     }
 
-
-
     public function userDetails($id)
     {
         $user = User::with('roles', 'plan')
@@ -91,19 +89,12 @@ class UserController extends Controller
         ->orderBy('created_at','desc')
         ->get();
 
-         // dd($uploaded_designes);
-         $design_count = Product::where('user_id', $id)
-         ->sum('design_count');
+       
+        // $product_count = Product::withCount('product')->where('user_id', $id)
+        // ->sum('design_count');
 
-        // $createdProducts = Product::where('user_id', $id)
-        //     ->withCount(['orderItems as purchased_quantity' => function ($query) {
-        //         $query->select(DB::raw('SUM(quantity)'));
-        //     }])
-        //     ->get();
-
-        // dd($createdProducts);
-        $design_count = Product::where('user_id', $id)
-        ->sum('design_count');
+        $purchased_count = Orders::where('user_id', $id)
+        ->sum('order_number');
 
         if (!$user) {
             return back()->withErrors('User not found.');
@@ -114,8 +105,8 @@ class UserController extends Controller
         return view('users/details', [
             'user' => $user,
             'uploaded_designes' => $uploaded_designes,
-            // 'purchased_designes' => $purchased_designes,
-            'design_count' => $design_count
+            // 'product_count' => $product_count,
+            'purchased_count' => $purchased_count
         ]);
     }
 
@@ -185,7 +176,7 @@ class UserController extends Controller
     }
 
     // Update the user's roles
-    public function update(Request $request, User $user)
+    public function updateRoles(Request $request, User $user)
     {
         $request->validate([
             'roles' => 'required|array',

@@ -41,14 +41,14 @@
       
                       <h3 class="profile-username text-center"> {{ ucwords($user->name) }}</h3>
       
-                      <p class="text-muted text-center">{{ $user->email }}</p>
+                      <p class="text-muted text-center">@foreach($user->roles as $role)
+                        {{ $role->name }}
+                      @endforeach</p>
       
                       <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item">
-                          <b>Role</b> <a class="float-right">
-                            @foreach($user->roles as $role)
-                              {{ $role->name }}
-                            @endforeach
+                          <b>Email</b> <a class="float-right">
+                            {{ $user->email }}
                           </a>
                         </li>
                         <li class="list-group-item">
@@ -57,7 +57,7 @@
                                         @else NA @endif</a>
                         </li>
                         <li class="list-group-item">
-                          <b>Uploads</b> <a class="float-right">{{ $design_count}}</a>
+                          <b>Products</b> <a class="float-right">{{ count($uploaded_designes) }}</a>
                         </li>
                       </ul>
       
