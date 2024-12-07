@@ -35,7 +35,7 @@ class ProductSubCategoryController extends Controller
         ProductSubCategory::create([
             'category_id' => $request->category_id,
             'name' => $request->name,
-            'code' => $request->code,
+            'code' => strtoupper($request->code),
             'isActive' => 1,
         ]);
 
@@ -50,4 +50,13 @@ class ProductSubCategoryController extends Controller
 
         return response()->json(['message' => 'Active status updated successfully', 'success' => true]);
     }
+
+    public function destroy($id)
+{
+    $subcategory = ProductSubCategory::findOrFail($id);
+    $subcategory->delete();
+
+    return redirect()->route('productSubCategories.create')->with('success', 'Product subcategory deleted successfully');
+}
+
 }

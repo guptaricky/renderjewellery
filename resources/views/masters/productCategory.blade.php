@@ -19,6 +19,26 @@
 
             <section class="content">
                 <div class="container-fluid">
+                    <!-- Flash Messages -->
+                    <!-- Flash Messages -->
+                    @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    @endif
+                    @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    @endif
+
+
                     <div class="row">
                         <!-- Create Product Category -->
                         <div class="col-md-6">
@@ -63,15 +83,18 @@
                                         </thead>
                                         <tbody>
                                             @foreach($categories as $index => $category)
-                                                <tr>
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td>{{ $category->name }}</td>
-                                                    <td>{{ $category->code }}</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-warning">Edit</button>
-                                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                                    </td>
-                                                </tr>
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $category->name }}</td>
+                                                <td>{{ $category->code }}</td>
+                                                <td>
+                                                    <form action="{{ route('productCategories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category and its subcategories?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
                                             @endforeach
                                         </tbody>
                                     </table>

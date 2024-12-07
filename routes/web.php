@@ -36,14 +36,17 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function () {
     Route::post('/plan', [PlanController::class, 'store'])->name('plan.store');
     Route::patch('/plan', [PlanController::class, 'updateActive'])->name('plan.update');
 
-
+    // Product Categories
     Route::get('/product-categories', [ProductCategoryController::class, 'create'])->name('productCategories.create');
     Route::post('/product-categories', [ProductCategoryController::class, 'store'])->name('productCategories.store');
     Route::patch('/product-categories/{id}/active', [ProductCategoryController::class, 'updateActive'])->name('productCategories.updateActive');
+    Route::delete('/product-categories/{id}', [ProductCategoryController::class, 'destroy'])->name('productCategories.destroy');
 
+    // Product Subcategories
     Route::get('/product-subcategories', [ProductSubCategoryController::class, 'create'])->name('productSubCategories.create');
     Route::post('/product-subcategories', [ProductSubCategoryController::class, 'store'])->name('productSubCategories.store');
     Route::patch('/product-subcategories/{id}/active', [ProductSubCategoryController::class, 'updateActive'])->name('productSubCategories.updateActive');
+    Route::delete('/product-subcategories/{id}', [ProductSubCategoryController::class, 'destroy'])->name('productSubCategories.destroy');
 
     Route::get('/user/list', [UserController::class, 'userList'])->name('user.list');
     Route::get('/user', [UserController::class, 'create'])->name('user.create');

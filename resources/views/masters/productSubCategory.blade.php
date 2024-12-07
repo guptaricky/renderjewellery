@@ -20,16 +20,24 @@
             <section class="content">
                 <div class="container-fluid">
                     <!-- Flash Messages -->
+                    <!-- Flash Messages -->
                     @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                     @endif
                     @if(session('error'))
-                        <div class="alert alert-danger">
-                            {{ session('error') }}
-                        </div>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                     @endif
+
 
                     <div class="row">
                         <!-- Create Product Subcategory -->
@@ -44,17 +52,17 @@
                                         <div class="form-group">
                                             <label>Category</label>
                                             @if($categories->isEmpty())
-                                                <p class="text-danger">No categories available. Please add categories first.</p>
+                                            <p class="text-danger">No categories available. Please add categories first.</p>
                                             @else
-                                                <select name="category_id" class="form-control">
-                                                    <option value="">Select Category</option>
-                                                    @foreach($categories as $category)
-                                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('category_id')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
+                                            <select name="category_id" class="form-control">
+                                                <option value="">Select Category</option>
+                                                @foreach($categories as $category)
+                                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('category_id')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                             @endif
                                         </div>
 
@@ -62,7 +70,7 @@
                                             <label>Subcategory Name</label>
                                             <input type="text" name="name" class="form-control" placeholder="Enter Subcategory Name" value="{{ old('name') }}">
                                             @error('name')
-                                                <span class="text-danger">{{ $message }}</span>
+                                            <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
 
@@ -70,7 +78,7 @@
                                             <label>Code</label>
                                             <input type="text" name="code" class="form-control" placeholder="Enter Code" value="{{ old('code') }}">
                                             @error('code')
-                                                <span class="text-danger">{{ $message }}</span>
+                                            <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
@@ -100,22 +108,25 @@
                                         </thead>
                                         <tbody>
                                             @if($subcategories->isEmpty())
-                                                <tr>
-                                                    <td colspan="5" class="text-center text-muted">No subcategories found.</td>
-                                                </tr>
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted">No subcategories found.</td>
+                                            </tr>
                                             @else
-                                                @foreach($subcategories as $index => $subcategory)
-                                                    <tr>
-                                                        <td>{{ $index + 1 }}</td>
-                                                        <td>{{ $subcategory->name }}</td>
-                                                        <td>{{ $subcategory->category->name ?? 'No category' }}</td>
-                                                        <td>{{ $subcategory->code }}</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-warning">Edit</button>
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
+                                            @foreach($subcategories as $index => $subcategory)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $subcategory->name }}</td>
+                                                <td>{{ $subcategory->category->name ?? 'No category' }}</td>
+                                                <td>{{ $subcategory->code }}</td>
+                                                <td>
+                                                    <form action="{{ route('productSubCategories.destroy', $subcategory->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this subcategory?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            @endforeach
                                             @endif
                                         </tbody>
                                     </table>
