@@ -48,6 +48,15 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function () {
     Route::patch('/product-subcategories/{id}/active', [ProductSubCategoryController::class, 'updateActive'])->name('productSubCategories.updateActive');
     Route::delete('/product-subcategories/{id}', [ProductSubCategoryController::class, 'destroy'])->name('productSubCategories.destroy');
 
+    // Product Categories
+    Route::get('/product-categories/{id}/edit', [ProductCategoryController::class, 'edit'])->name('productCategories.edit');
+    Route::patch('/product-categories/{id}', [ProductCategoryController::class, 'update'])->name('productCategories.update');
+
+    // Product Subcategories
+    Route::get('/product-subcategories/{id}/edit', [ProductSubCategoryController::class, 'edit'])->name('productSubCategories.edit');
+    Route::patch('/product-subcategories/{id}', [ProductSubCategoryController::class, 'update'])->name('productSubCategories.update');
+
+
     Route::get('/user/list', [UserController::class, 'userList'])->name('user.list');
     Route::get('/user', [UserController::class, 'create'])->name('user.create');
     Route::post('/user', [UserController::class, 'store'])->name('user.store');

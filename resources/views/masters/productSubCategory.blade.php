@@ -118,13 +118,22 @@
                                                 <td>{{ $subcategory->name }}</td>
                                                 <td>{{ $subcategory->category->name ?? 'No category' }}</td>
                                                 <td>{{ $subcategory->code }}</td>
-                                                <td>
+                                                <!-- <td>
                                                     <form action="{{ route('productSubCategories.destroy', $subcategory->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this subcategory?');">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                                     </form>
+                                                </td> -->
+                                                <td>
+                                                    <a href="{{ route('productSubCategories.edit', $subcategory->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                                    <form method="POST" action="{{ route('productSubCategories.destroy', $subcategory->id) }}" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                    </form>
                                                 </td>
+
                                             </tr>
                                             @endforeach
                                             @endif

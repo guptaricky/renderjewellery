@@ -19,7 +19,7 @@ class ProductCategoryController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|min:2',
+            'name' => 'required|min:2|unique:product_categories,name',
             'code' => 'required|min:2|unique:product_categories,code',
         ];
 
@@ -47,16 +47,37 @@ class ProductCategoryController extends Controller
     }
 
     public function destroy($id)
-{
-    $category = ProductCategory::findOrFail($id);
+    {
+        $category = ProductCategory::findOrFail($id);
 
-    // Delete all associated subcategories
-    $category->subcategories()->delete();
+        // Delete all associated subcategories
+        $category->subcategories()->delete();
 
-    // Delete the category
-    $category->delete();
+        // Delete the category
+        $category->delete();
 
-    return redirect()->route('productCategories.create')->with('success', 'Product category and its subcategories deleted successfully');
-}
+        return redirect()->route('productCategories.create')->with('success', 'Product category and its subcategories deleted successfully');
+    }
 
+    public function edit($id)
+    {
+        $category = ProductCategory::findOrFail($id);
+        return view('masters/productCategoryEdit', compact('category'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|min:2|unique:product_categories,name',
+            'code' => 'required|min:2|unique:product_categories,code',
+        ]);
+
+        $category = ProductCategory::findOrFail($id);
+        $category->update([
+            'name' => $request->name,
+            'code' => $request->code,
+        ]);
+
+        return redirect()->route('productCategories.create')->with('success', 'Product Category updated successfully.');
+    }
 }

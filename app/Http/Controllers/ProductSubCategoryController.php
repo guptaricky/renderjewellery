@@ -23,7 +23,7 @@ class ProductSubCategoryController extends Controller
     {
         $rules = [
             'category_id' => 'required|exists:product_categories,id',
-            'name' => 'required|min:2',
+            'name' => 'required|min:2|unique:product_subcategories,name',
             'code' => 'required|min:2|unique:product_subcategories,code',
         ];
 
@@ -52,11 +52,36 @@ class ProductSubCategoryController extends Controller
     }
 
     public function destroy($id)
-{
-    $subcategory = ProductSubCategory::findOrFail($id);
-    $subcategory->delete();
+    {
+        $subcategory = ProductSubCategory::findOrFail($id);
+        $subcategory->delete();
 
-    return redirect()->route('productSubCategories.create')->with('success', 'Product subcategory deleted successfully');
-}
+        return redirect()->route('productSubCategories.create')->with('success', 'Product subcategory deleted successfully');
+    }
 
+    public function edit($id)
+    {
+        $subcategory = ProductSubCategory::findOrFail($id);
+        $categories = ProductCategory::all(); // For the dropdown
+        return view('masters/productSubCategoryEdit', compact('subcategory', 'categories'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'category_id' => 'required|exists:product_categories,id',
+            'name' => 'required|min:2|unique:product_subcategories,name',
+            'code' => 'required|min:2|unique:product_subcategories,code',
+        ]);
+
+
+        $subcategory = ProductSubCategory::findOrFail($id);
+        $subcategory->update([
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'code' => $request->code,
+        ]);
+
+        return redirect()->route('productSubCategories.create')->with('success', 'Product Subcategory updated successfully.');
+    }
 }

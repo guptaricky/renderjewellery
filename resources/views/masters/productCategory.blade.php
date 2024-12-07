@@ -93,13 +93,22 @@
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $category->name }}</td>
                                                 <td>{{ $category->code }}</td>
-                                                <td>
+                                                <!-- <td>
                                                     <form action="{{ route('productCategories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category and its subcategories?');">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                                     </form>
+                                                </td> -->
+                                                <td>
+                                                    <a href="{{ route('productCategories.edit', $category->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                                    <form method="POST" action="{{ route('productCategories.destroy', $category->id) }}" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                    </form>
                                                 </td>
+
                                             </tr>
                                             @endforeach
                                         </tbody>
