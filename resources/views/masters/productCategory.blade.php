@@ -52,10 +52,16 @@
                                         <div class="form-group">
                                             <label>Category Name</label>
                                             <input type="text" name="name" class="form-control" placeholder="Enter Category Name">
+                                            @error('name')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                         <div class="form-group">
                                             <label>Code</label>
                                             <input type="text" name="code" class="form-control" placeholder="Enter Code">
+                                            @error('code')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="card-footer">
