@@ -45,7 +45,18 @@
                                                 <select class="form-control" id="role" name="role">
                                                     <option value="">All Roles</option>
                                                     @foreach($roles as $role)
-                                                        <option value="{{ $role->name }}" {{ $role->name == $roleFilter ? 'selected' : '' }}>{{ $role->name }}</option>
+                                                    <option value="{{ $role->name }}" {{ $role->name == $roleFilter ? 'selected' : '' }}>{{ $role->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <!-- Filter by Plan -->
+                                            <div class="form-group col-md-3">
+                                                <label for="plan">Filter by Plan:</label>
+                                                <select class="form-control" id="plan" name="plan">
+                                                    <option value="">All Plans</option>
+                                                    @foreach($plans as $plan)
+                                                    <option value="{{ $plan->name }}" {{ $plan->name == $planFilter ? 'selected' : '' }}>{{ $plan->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -61,9 +72,9 @@
 
                                 <!-- Success Message -->
                                 @if(session('success'))
-                                    <div class="alert alert-success">
-                                        {{ session('success') }}
-                                    </div>
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
                                 @endif
 
                                 <div class="card-body">
@@ -80,26 +91,26 @@
                                         </thead>
                                         <tbody>
                                             @foreach($users as $index => $user)
-                                                <tr>
-                                                    <td>{{ $index + 1 }}.</td>
-                                                    <td>{{ $user->name }}</td>
-                                                    <td>{{ $user->email }}</td>
-                                                    <td>
-                                                        @foreach($user->roles as $role)
-                                                            {{ $role->name }}
-                                                        @endforeach
-                                                    </td>
-                                                    <td>
-                                                        @if($user->plan != null)
-                                                            {{ $user->plan['name'] }}
-                                                        @else
-                                                            NA
-                                                        @endif
-                                                    </td>
-                                                    <td><a href="{{ route('user.details', ['id' => $user->id]) }}">
+                                            <tr>
+                                                <td>{{ $index + 1 }}.</td>
+                                                <td>{{ $user->name }}</td>
+                                                <td>{{ $user->email }}</td>
+                                                <td>
+                                                    @foreach($user->roles as $role)
+                                                    {{ $role->name }}
+                                                    @endforeach
+                                                </td>
+                                                <td>
+                                                    @if($user->plan != null)
+                                                    {{ $user->plan['name'] }}
+                                                    @else
+                                                    NA
+                                                    @endif
+                                                </td>
+                                                <td><a href="{{ route('user.details', ['id' => $user->id]) }}">
                                                         <button type="button" class="btn btn-sm btn-outline-info">View Details</button>
                                                     </a></td>
-                                                </tr>
+                                            </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
