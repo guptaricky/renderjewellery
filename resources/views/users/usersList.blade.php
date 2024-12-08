@@ -149,7 +149,7 @@
                         <td>${user.roles.map(role => role.name).join(', ')}</td>
                         <td>${user.plan ? user.plan.name : 'NA'}</td>
                         <td>
-                            <a href="/users/${user.id}" class="btn btn-sm btn-outline-info">View Details</a>
+                        <a href="{{ route('user.details', ['id' => $user->id]) }}"><button type="button" class="btn btn-sm btn-outline-info">View Details</button></a>
                         </td>
                     `;
                             tbody.appendChild(row);
