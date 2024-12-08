@@ -82,6 +82,7 @@
                         <div class="active tab-pane" id="activity">
                           <!-- The timeline -->
                           <div class="timeline timeline-inverse">
+                            @if (!empty($uploaded_designes))
                             @foreach($uploaded_designes as $index => $uploaded_designe)
                             <!-- timeline time label -->
                             <div class="time-label">
@@ -104,7 +105,7 @@
                                 <div class="timeline-body">
 
 
-                                  <h5 class="mt-4 mb-2">Description</h5>
+                                  <h5 class="mt-4 mb-2">Order Number</h5>
                                   {{ $uploaded_designe['order_number'] }}
                                   
                                 </div>
@@ -146,7 +147,7 @@
                                   </div>
 
                                   <h5 class="mt-4 mb-2">Description</h5>
-                                  {{ $uploaded_designe['description'] }}
+                                  {{ strip_tags($uploaded_designe['description']) }}
 
                                   <p class="mt-4">
                                     <a href="#" class="link-black text-sm mr-2"><i class="fas fa-tag mr-1"></i> Price: {{ $uploaded_designe['category_id'] }}</a>
@@ -175,6 +176,9 @@
                             <div>
                               <i class="far fa-clock bg-gray"></i>
                             </div>
+                            @else
+                              No Product Created...!!
+                            @endif
                           </div>
       
       

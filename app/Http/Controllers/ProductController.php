@@ -14,14 +14,22 @@ class ProductController extends Controller
 {
     public function productList(Request $request): View
     {
-        $products = Product::orderBy('created_at','DESC')->get();
-      
+        $products = Product::with('users')->orderBy('created_at','DESC')->get();
+    //   dd($products);
         return view('products.productList', [
             'user' => $request->user(),
             'products' => $products
         ]);
     }
 
+    public function showCreateForm(Request $request): View
+    {
+        // $products = Product::orderBy('created_at','DESC')->get();
+        return view('products.createProduct', [
+            'user' => $request->user(),
+            // 'products' => $products
+        ]);
+    }
     public function createProduct(Request $request)
     {
         // Validate input files
@@ -101,10 +109,21 @@ class ProductController extends Controller
                 'uploaded_at' => Carbon::parse($product->created_at)->setTimezone('Asia/Kolkata')->format('Y-m-d H:i:s'),
             ];
         }
-        return response()->json([
-            'message' => 'Images uploaded successfully',
-            'data' => $uploadedImages
-        ], 200);
+        // return response()->json([
+        //     'message' => 'Images uploaded successfully',
+        //     'data' => $uploadedImages
+        // ], 200);
+
+        return redirect()->route('dashboard.user')->with('success', 'Product created successfully');
+
+    }
+    public function detailProduct($id, Request $request): View
+    {
+        $products = Product::with('productdesign')->where('id', $id)->orderBy('created_at','DESC')->first();
+        return view('products.productDetail', [
+            'user' => $request->user(),
+            'products' => $products
+        ]);
     }
     // Helper method to determine file type
     private function getFileType($mimeType)

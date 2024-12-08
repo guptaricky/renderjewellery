@@ -8,6 +8,8 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductSubCategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,13 +29,34 @@ Route::middleware('auth')->group(function () {
 // Route::get('users/{user}/edit-role', [RoleController::class, 'edit'])->middleware('role:admin')->name('users.edit-role');
 // Route::post('users/{user}/update-role', [RoleController::class, 'update'])->middleware('role:admin')->name('users.update-role');
 
-Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function() {
+Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function () {
     // Route::get('/admin/users', [RoleController::class, 'index'])->name('admin.users.index');
     // Route::post('/admin/users/{user}/update-role', [RoleController::class, 'update'])->name('admin.users.update-role');
 
     Route::get('/plan', [PlanController::class, 'create'])->name('plan.create');
     Route::post('/plan', [PlanController::class, 'store'])->name('plan.store');
     Route::patch('/plan', [PlanController::class, 'updateActive'])->name('plan.update');
+
+    // Product Categories
+    Route::get('/product-categories', [ProductCategoryController::class, 'create'])->name('productCategories.create');
+    Route::post('/product-categories', [ProductCategoryController::class, 'store'])->name('productCategories.store');
+    Route::patch('/product-categories/{id}/active', [ProductCategoryController::class, 'updateActive'])->name('productCategories.updateActive');
+    Route::delete('/product-categories/{id}', [ProductCategoryController::class, 'destroy'])->name('productCategories.destroy');
+
+    // Product Subcategories
+    Route::get('/product-subcategories', [ProductSubCategoryController::class, 'create'])->name('productSubCategories.create');
+    Route::post('/product-subcategories', [ProductSubCategoryController::class, 'store'])->name('productSubCategories.store');
+    Route::patch('/product-subcategories/{id}/active', [ProductSubCategoryController::class, 'updateActive'])->name('productSubCategories.updateActive');
+    Route::delete('/product-subcategories/{id}', [ProductSubCategoryController::class, 'destroy'])->name('productSubCategories.destroy');
+
+    // Product Categories
+    Route::get('/product-categories/{id}/edit', [ProductCategoryController::class, 'edit'])->name('productCategories.edit');
+    Route::patch('/product-categories/{id}', [ProductCategoryController::class, 'update'])->name('productCategories.update');
+
+    // Product Subcategories
+    Route::get('/product-subcategories/{id}/edit', [ProductSubCategoryController::class, 'edit'])->name('productSubCategories.edit');
+    Route::patch('/product-subcategories/{id}', [ProductSubCategoryController::class, 'update'])->name('productSubCategories.update');
+
 
     Route::get('/user/list', [UserController::class, 'userList'])->name('user.list');
     Route::get('/user', [UserController::class, 'create'])->name('user.create');
@@ -46,8 +69,9 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function() {
 
 });
 
-
-Route::post('products/create', [ProductController::class, 'createProduct']);
+Route::get('/products/create', [ProductController::class, 'showCreateForm'])->name('products.create');
+Route::post('/products/create', [ProductController::class, 'createProduct'])->name('products.create');
+Route::get('/products/detail/{id}', [ProductController::class, 'detailProduct'])->name('products.detail');
 
 
 
@@ -57,4 +81,4 @@ Route::get('/csrf-token', function () {
 });
 
 
-require __DIR__.'/auth.php'; 
+require __DIR__ . '/auth.php';

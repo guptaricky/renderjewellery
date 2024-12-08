@@ -48,8 +48,6 @@
                                                 <th>Created By</th>
                                                 <th>Content</th>
                                                 <th>Price (&#8377;)</th>
-                                                <th>Category</th>
-                                                <th>Sub-Category</th>
                                                 <th>Designer</th>
                                                 <th>Created at</th>
                                             </tr>
@@ -59,15 +57,13 @@
                                                 <tr>
                                                     <td>{{ $index + 1 }}.</td>
                                                     <td>{{ $product->title }}</td>
-                                                    <td>{{ $product->product_code }}</td>
+                                                    <td>{{ "{$product->product_code}/{$product->category_id}/{$product->subcategory_id}" }}</td>
                                                     <td>
-                                                        @if($product->user != null)
-                                                            {{ $product->user['name'] }}
+                                                        @if($product->users != null)
+                                                            {{ $product->users['name'] }}
                                                         @endif</td>
                                                     <td>{{ $product->design_count }}</td>
                                                     <td>{{ $product->price }}</td>
-                                                    <td>{{ $product->category_id }}</td>
-                                                    <td>{{ $product->subcategory_id }}</td>
                                                     <td>{{ $product->designer_name }}</td>
                                                     <td>{{ $product->created_at }}</td>
                                                 </tr>

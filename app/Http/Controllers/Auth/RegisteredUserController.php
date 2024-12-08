@@ -58,10 +58,10 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         if(in_array($getUserName->name, ['Admin', 'SuperAdmin'])){
-            return redirect(route('adminDashboard', absolute: false));
+            return redirect(route('dashboard.admin', absolute: false));
         }
         else{
-            return redirect(route('userDashboard', absolute: false));
+            return redirect(route('dashboard.user', absolute: false));
         }
         
     }
