@@ -15,15 +15,16 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+
     public function userList(Request $request)
     {
-        $roleFilter = $request->query('role', '');  // Default to empty if not present
-        $planFilter = $request->query('plan', '');  // Default to empty if not present
-        $searchtext = $request->query('searchtext', '');  // Default to empty if not present
+        $roleFilter = $request->query('role', '');
+        $planFilter = $request->query('plan', '');
+        $searchtext = $request->query('searchtext', '');
 
         $authUser = Auth::user();  // Get the currently logged-in user
 
-        // Build base query for roles
+        // Fetch roles and plans
         $rolesQuery = Role::query();
         if ($authUser->hasRole('Admin')) {
             $rolesQuery->whereNotIn('name', ['SuperAdmin', 'Admin']);
@@ -31,15 +32,13 @@ class UserController extends Controller
         if ($authUser->hasRole('SuperAdmin')) {
             $rolesQuery->where('name', '!=', 'SuperAdmin');
         }
-        $roles = $rolesQuery->get();  // Fetch the roles
+        $roles = $rolesQuery->get();
 
-        // Fetch plans for the dropdown
         $plans = Plans::all();
 
-        // Build the base query for users
+        // Base query for users
         $usersQuery = User::with('roles', 'plan');
 
-        // Filter out the logged-in user or SuperAdmins/Admins based on roles
         if ($authUser->hasRole('SuperAdmin')) {
             $usersQuery->where('id', '!=', $authUser->id);  // Exclude SuperAdmin itself
         }
@@ -50,21 +49,20 @@ class UserController extends Controller
             });  // Exclude SuperAdmins and Admins for Admin users
         }
 
-        // Apply role filter if selected
+        // Apply role and plan filters if they are set
         if ($roleFilter !== '') {
             $usersQuery->whereHas('roles', function ($roleQuery) use ($roleFilter) {
                 $roleQuery->where('name', $roleFilter);
             });
         }
 
-        // Apply plan filter if selected
         if ($planFilter !== '') {
             $usersQuery->whereHas('plan', function ($planQuery) use ($planFilter) {
                 $planQuery->where('name', $planFilter);
             });
         }
 
-        // Apply search text filter if entered
+        // Apply search filter
         if ($searchtext !== '') {
             $usersQuery->where(function ($query) use ($searchtext) {
                 $query->where('name', 'like', '%' . $searchtext . '%')
@@ -72,20 +70,43 @@ class UserController extends Controller
             });
         }
 
-        // Execute the query to get filtered users
+        // Fetch filtered users
         $users = $usersQuery->get();
 
-        // Pass the data to the view
+        // If the request is AJAX, return JSON response
+        if ($request->ajax()) {
+            return response()->json([
+                'users' => $users,
+                'roles' => $roles,
+                'plans' => $plans,
+                'roleFilter' => $roleFilter,
+                'planFilter' => $planFilter,
+                'searchtext' => $searchtext,
+            ]);
+        }
+
+        // Otherwise, return the view
         return view('users.usersList', [
             'users' => $users,
-            'roles' => $roles,       // Pass roles to the view
-            'plans' => $plans,       // Pass plans to the view
+            'roles' => $roles,
+            'plans' => $plans,
             'roleFilter' => $roleFilter,
             'planFilter' => $planFilter,
-            'searchtext' => $searchtext
+            'searchtext' => $searchtext,
         ]);
     }
-    
+
+    public function search(Request $request)
+    {
+        // If the request is an AJAX request, return the users as JSON
+        if ($request->ajax()) {
+            return $this->userList($request);  // Call userList and pass the request to it
+        }
+
+        // If it's not an AJAX request, proceed as usual (return a view or something else)
+        return view('users.usersList');
+    }
+
     public function userDetails($id)
     {
         $user = User::with('roles', 'plan')

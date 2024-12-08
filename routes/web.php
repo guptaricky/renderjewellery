@@ -66,6 +66,9 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function () {
     Route::get('/user/designDetails/{id}/{upload_id}', [UserController::class, 'designDetails'])->where('id', '[0-9]+')->name('user.designDetails');
     Route::get('/orders/orderList', [OrderController::class, 'orderList'])->name('orders.orderList');
     Route::get('/products/productList', [ProductController::class, 'productList'])->name('products.productList');
+    Route::get('/users/search', [UserController::class, 'search'])->name('user.search');
+
+    
 
 });
 
