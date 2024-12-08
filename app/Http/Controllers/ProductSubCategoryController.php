@@ -6,6 +6,7 @@ use App\Models\ProductSubCategory;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProductSubCategoryController extends Controller
 {
@@ -70,8 +71,16 @@ class ProductSubCategoryController extends Controller
     {
         $request->validate([
             'category_id' => 'required|exists:product_categories,id',
-            'name' => 'required|min:2|unique:product_subcategories,name',
-            'code' => 'required|min:2|unique:product_subcategories,code',
+            'name' => [
+                'required',
+                'min:2',
+                Rule::unique('product_subcategories', 'name')->ignore($id),
+            ],
+            'code' => [
+                'required',
+                'min:2',
+                Rule::unique('product_subcategories', 'code')->ignore($id),
+            ],
         ]);
 
 
