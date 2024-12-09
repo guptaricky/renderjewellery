@@ -13,8 +13,8 @@ class Dashboard extends Controller
 {
     public function adminDashboard(Request $request): View
     {
-        $orders = Orders::where('payment_status', 'paid')->orderBy('created_at','DESC')->get();
-        $products = Product::with('productdesign')->orderBy('created_at','DESC')->get();
+        $orders = Orders::where('payment_status', 'paid')->orderBy('created_at', 'DESC')->get();
+        $products = Product::with('productdesign')->orderBy('created_at', 'DESC')->get();
         // $designers = User::orderBy('created_at','DESC')->get();
 
         $roleCounts = Role::withCount(['users'])->get();
@@ -29,8 +29,11 @@ class Dashboard extends Controller
 
     public function userDashboard(Request $request): View
     {
-        $orders = Orders::where('payment_status', 'paid')->orderBy('created_at','DESC')->get();
-        $products = Product::orderBy('created_at','DESC')->get();
+        $orders = Orders::where('payment_status', 'paid')->orderBy('created_at', 'DESC')->get();
+        // $products = Product::orderBy('created_at', 'DESC')->get();
+        $products = Product::with(['category', 'subcategory'])
+            ->orderBy('created_at', 'DESC')
+            ->get();
         // $designers = User::orderBy('created_at','DESC')->get();
 
         $roleCounts = Role::withCount(['users'])->get();

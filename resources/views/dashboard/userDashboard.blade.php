@@ -1,7 +1,7 @@
 <x-app-layout>
-    
 
-    <!-- Content Wrapper. Contains page content -->
+
+  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -27,17 +27,17 @@
         <!-- Flash Messages -->
         @if(session('success'))
         <div class="alert alert-success">
-            {{ session('success') }}
+          {{ session('success') }}
         </div>
         @endif
         @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
+        <div class="alert alert-danger">
+          {{ session('error') }}
+        </div>
         @endif
         <div class="row">
           <div class="col-lg-12">
-            
+
             <div class="card">
               <div class="card-header border-0">
                 <h3 class="card-title">Products</h3>
@@ -53,49 +53,49 @@
               <div class="card-body table-responsive p-0">
                 <table class="table table-striped project">
                   <thead>
-                  <tr>
-                    <th>SNO.</th>
-                    <th>Product Title</th>
-                    <th>Designes</th>
-                    <th>Price</th>
-                    <th>Sales</th>
-                    <th>Designer</th>
-                    <th>Category</th>
-                    <th>More</th>
-                  </tr>
+                    <tr>
+                      <th>SNO.</th>
+                      <th>Product Title</th>
+                      <th>Designes</th>
+                      <th>Price</th>
+                      <th>Sales</th>
+                      <th>Designer</th>
+                      <th>Category</th>
+                      <th>More</th>
+                    </tr>
                   </thead>
                   <tbody>
-                  @foreach($products as $index => $product)
-                  <tr>
-                    <td>
-                      {{ $index + 1 }}.
-                    </td>
-                    <td>
-                      {{-- <img src="{{ Vite::asset("public/dist/img/default-150x150.png")}}" alt="Product 1" class="img-circle img-size-32 mr-2"> --}}
-                      <a>{{ $product->title }}</a></br><small>{{ $product->product_code }}</small>
-                    </td>
-                    <td>
-                      @foreach ($product->productdesign as $designes)
-                        <img src="{{ Vite::asset('storage/app/public/').$designes['file_path'] }}"  class="img-circle img-size-32 mr-2">
-                      @endforeach
-                    </td>
-                    <td>(&#8377;){{ $product->price }}</td>
-                    <td>
-                      <small class="text-success mr-1">
-                        <i class="fas fa-arrow-up"></i>
-                        12%
-                      </small>
-                      12,000 Sold
-                    </td>
-                    <td>{{ $product->designer_name }}</td>
-                    <td>{{ $product->category_id }}/{{ $product->subcategory_id }}</td>
-                    <td>
-                      <a href="{{ route('products.detail',[$product->id]) }}" class="text-muted">
-                        <i class="fas fa-search"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  @endforeach
+                    @foreach($products as $index => $product)
+                    <tr>
+                      <td>
+                        {{ $index + 1 }}.
+                      </td>
+                      <td>
+                        {{-- <img src="{{ Vite::asset("public/dist/img/default-150x150.png")}}" alt="Product 1" class="img-circle img-size-32 mr-2"> --}}
+                        <a>{{ $product->title }}</a></br><small>{{ $product->product_code }}</small>
+                      </td>
+                      <td>
+                        @foreach ($product->productdesign as $designes)
+                        <img src="{{ Vite::asset('storage/app/public/').$designes['file_path'] }}" class="img-circle img-size-32 mr-2">
+                        @endforeach
+                      </td>
+                      <td>(&#8377;){{ $product->price }}</td>
+                      <td>
+                        <small class="text-success mr-1">
+                          <i class="fas fa-arrow-up"></i>
+                          12%
+                        </small>
+                        12,000 Sold
+                      </td>
+                      <td>{{ $product->designer_name }}</td>
+                      <td>{{ $product->category->name }}/{{ $product->subcategory->name }}</td>
+                      <td>
+                        <a href="{{ route('products.detail',[$product->id]) }}" class="text-muted">
+                          <i class="fas fa-search"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    @endforeach
                   </tbody>
                 </table>
               </div>

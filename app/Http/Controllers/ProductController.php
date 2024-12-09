@@ -7,6 +7,8 @@ use App\Models\ProductDesign;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\ProductSubCategory;
+use App\Models\ProductCategory;
 use Carbon\Carbon;
 use Illuminate\View\View;
 
@@ -26,10 +28,12 @@ class ProductController extends Controller
 
     public function showCreateForm(Request $request): View
     {
-        // $products = Product::orderBy('created_at','DESC')->get();
+        $categories = ProductCategory::with(['subcategories'])
+            ->orderBy('created_at', 'DESC')
+            ->get();
         return view('products.createProduct', [
             'user' => $request->user(),
-            // 'products' => $products
+            'categories' => $categories
         ]);
     }
     public function createProduct(Request $request)
