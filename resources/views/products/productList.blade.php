@@ -29,13 +29,13 @@
                                 </div>
                                 <!-- /.card-header -->
 
-                                
+
 
                                 <!-- Success Message -->
                                 @if(session('success'))
-                                    <div class="alert alert-success">
-                                        {{ session('success') }}
-                                    </div>
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
                                 @endif
 
                                 <div class="card-body">
@@ -54,19 +54,20 @@
                                         </thead>
                                         <tbody>
                                             @foreach($products as $index => $product)
-                                                <tr>
-                                                    <td>{{ $index + 1 }}.</td>
-                                                    <td>{{ $product->title }}</td>
-                                                    <td>{{ "{$product->product_code}/{$product->category_id}/{$product->subcategory_id}" }}</td>
-                                                    <td>
-                                                        @if($product->users != null)
-                                                            {{ $product->users['name'] }}
-                                                        @endif</td>
-                                                    <td>{{ $product->design_count }}</td>
-                                                    <td>{{ $product->price }}</td>
-                                                    <td>{{ $product->designer_name }}</td>
-                                                    <td>{{ $product->created_at }}</td>
-                                                </tr>
+                                            <tr>
+                                                <td>{{ $index + 1 }}.</td>
+                                                <td>{{ $product->title }}</td>
+                                                <td>{{ "{$product->product_code}/{$product->category->name}/{$product->subcategory->name}" }}</td>
+                                                <td>
+                                                    @if($product->users != null)
+                                                    {{ $product->users['name'] }}
+                                                    @endif
+                                                </td>
+                                                <td>{{ $product->design_count }}</td>
+                                                <td>{{ $product->price }}</td>
+                                                <td>{{ $product->designer_name }}</td>
+                                                <td>{{ $product->created_at }}</td>
+                                            </tr>
                                             @endforeach
                                         </tbody>
                                     </table>

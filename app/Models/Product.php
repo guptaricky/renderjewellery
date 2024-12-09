@@ -44,4 +44,13 @@ class Product extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class, 'category_id');
+    }
+
+    public function subcategory()
+    {
+        return $this->belongsTo(ProductSubCategory::class, 'subcategory_id');
+    }
 }

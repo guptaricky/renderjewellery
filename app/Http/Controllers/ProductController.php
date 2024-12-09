@@ -14,8 +14,10 @@ class ProductController extends Controller
 {
     public function productList(Request $request): View
     {
-        $products = Product::with('users')->orderBy('created_at','DESC')->get();
-    //   dd($products);
+        $products = Product::with(['users', 'category', 'subcategory'])
+            ->orderBy('created_at', 'DESC')
+            ->get();
+        //   dd($products);
         return view('products.productList', [
             'user' => $request->user(),
             'products' => $products
@@ -64,23 +66,23 @@ class ProductController extends Controller
 
         $product = new Product();
         $product->user_id = 2; // Use the authenticated user's ID // $user_id = Auth::user()->id;
-        $product->title = $request->title; 
-        $product->description = $request->description; 
-        $product->short_description = $request->short_description; 
-        $product->price = $request->price; 
-        $product->category_id = $request->category_id; 
-        $product->subcategory_id = $request->subcategory_id; 
-        $product->product_code = $request->product_code; 
-        $product->designer_name = $request->designer_name; 
-        $product->weight = $request->weight; 
-        $product->dimensions = $request->dimensions; 
-        $product->design_count = 0; 
+        $product->title = $request->title;
+        $product->description = $request->description;
+        $product->short_description = $request->short_description;
+        $product->price = $request->price;
+        $product->category_id = $request->category_id;
+        $product->subcategory_id = $request->subcategory_id;
+        $product->product_code = $request->product_code;
+        $product->designer_name = $request->designer_name;
+        $product->weight = $request->weight;
+        $product->dimensions = $request->dimensions;
+        $product->design_count = 0;
         $product_upload = $product->save();
 
         $productId = $product->id; // Retrieve the ID of the saved parent record
         $designCount = 0;
 
-        if($product_upload){
+        if ($product_upload) {
             // Process each file
             foreach ($request->file('files') as $file) {
                 // Store the file in the 'uploads' directory inside 'storage/app/public'
@@ -95,9 +97,9 @@ class ProductController extends Controller
                 $design->file_type = $this->getFileType($file->getMimeType()); // Identify file type (e.g., image, video)
                 $design->save(); // Save the image record
 
-                $designCount++;                
+                $designCount++;
             }
-            
+
             // Update the design_count in the parent record
             Product::where('id', $productId)->update(['design_count' => $designCount]);
 
@@ -115,11 +117,10 @@ class ProductController extends Controller
         // ], 200);
 
         return redirect()->route('dashboard.user')->with('success', 'Product created successfully');
-
     }
     public function detailProduct($id, Request $request): View
     {
-        $products = Product::with('productdesign')->where('id', $id)->orderBy('created_at','DESC')->first();
+        $products = Product::with('productdesign')->where('id', $id)->orderBy('created_at', 'DESC')->first();
         return view('products.productDetail', [
             'user' => $request->user(),
             'products' => $products
