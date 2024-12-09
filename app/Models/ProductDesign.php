@@ -13,7 +13,8 @@ class ProductDesign extends Model
         'product_id',
         'file_name',
         'file_path',
-        'mime_type'
+        'mime_type',
+        'file_type'
     ];
 
     public function product()
