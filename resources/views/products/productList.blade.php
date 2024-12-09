@@ -67,7 +67,13 @@
                                                 <td>{{ $product->price }}</td>
                                                 <td>{{ $product->designer_name }}</td>
                                                 <td>{{ $product->created_at }}</td>
+                                                <td>
+                                                    <a href="{{ route('products.detail',[$product->id]) }}" class="text-muted">
+                                                        <button type="button" class="btn btn-sm btn-outline-info">View More</button>
+                                                    </a>
+                                                </td>
                                             </tr>
+
                                             @endforeach
                                         </tbody>
                                     </table>
