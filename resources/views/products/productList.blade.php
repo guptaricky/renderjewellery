@@ -57,7 +57,7 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}.</td>
                                                 <td>{{ $product->title }}</td>
-                                                <td>{{ "{$product->product_code}/{$product->category->name}/{$product->subcategory->name}" }}</td>
+                                                <td>{{ "{$product->product_code}/{$product->category->code}/{$product->subcategory->code}" }}</td>
                                                 <td>
                                                     @if($product->users != null)
                                                     {{ $product->users['name'] }}

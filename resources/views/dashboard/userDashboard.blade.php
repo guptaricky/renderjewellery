@@ -88,7 +88,7 @@
                         12,000 Sold
                       </td>
                       <td>{{ $product->designer_name }}</td>
-                      <td>{{ $product->category->name }}/{{ $product->subcategory->name }}</td>
+                      <td>{{ $product->category->code }}/{{ $product->subcategory->code }}</td>
                       <td>
                         <a href="{{ route('products.detail',[$product->id]) }}" class="text-muted">
                           <i class="fas fa-search"></i>
