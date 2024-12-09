@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('api_token', 80)->unique()->nullable()->after('password');
+            // Check if the column already exists before adding it
+            if (!Schema::hasColumn('users', 'api_token')) {
+                $table->string('api_token', 80)->unique()->nullable()->after('password');
+            }
         });
     }
 
@@ -22,7 +25,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('api_token');
+            if (Schema::hasColumn('users', 'api_token')) {
+                $table->dropColumn('api_token');
+            }
         });
     }
 };
