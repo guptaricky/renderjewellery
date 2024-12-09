@@ -169,7 +169,7 @@
                   <div class="col-12 col-sm-4">
                     <div class="info-box">
                       <div class="info-box-content">
-                        <span class="info-box-text">Designed By</span>
+                        <span class="info-box-text">Designed By -> </span>
                         <span class="info-box-number">{{ $products->designer_name }}</span>
                       </div>
                     </div>
@@ -196,10 +196,10 @@
                 <h3 class="text-primary">Description</h3>
                 <p class="text-muted">{{ substr($products->description, 0, 300) }}...</p>
                 <br>
-                <p class="text-sm">Designed By
+                <p class="text-sm">Designed By  
                   <b>{{ $products->designer_name }}</b>
                 </p>
-                <p class="text-sm">Category
+                <p class="text-sm">Category  
                   <b>{{ $products->category->name }}</b>
                 </p>
 
