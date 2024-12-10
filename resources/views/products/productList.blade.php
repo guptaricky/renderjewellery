@@ -48,6 +48,7 @@
                                                 <th>Created By</th>
                                                 <th>Content</th>
                                                 <th>Price (&#8377;)</th>
+                                                <th>Status</th>
                                                 <th>Designer</th>
                                                 <th>Created at</th>
                                             </tr>
@@ -65,6 +66,15 @@
                                                 </td>
                                                 <td>{{ $product->design_count }}</td>
                                                 <td>{{ $product->price }}</td>
+                                                <td>
+                                                    @if ($product->status == 1)
+                                                    <span class="badge badge-success">Approved</span>
+                                                    @elseif ($product->status == 2)
+                                                    <span class="badge badge-warning">Pending</span>
+                                                    @else
+                                                    <span class="badge badge-danger">Rejected</span>
+                                                    @endif
+                                                </td>
                                                 <td>{{ $product->designer_name }}</td>
                                                 <td>{{ $product->created_at }}</td>
                                                 <td>

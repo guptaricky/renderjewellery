@@ -54,4 +54,8 @@ class Product extends Model
     {
         return $this->belongsTo(ProductSubCategory::class, 'subcategory_id');
     }
+    public function comments()
+    {
+        return $this->hasMany(ProductComment::class);
+    }
 }

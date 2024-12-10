@@ -74,6 +74,7 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function () {
 
 Route::get('/products/create', [ProductController::class, 'showCreateForm'])->name('products.create');
 Route::post('/products/create', [ProductController::class, 'createProduct'])->name('products.create');
+Route::post('/products/storeComment', [ProductController::class, 'storeComment'])->name('products.storeComment');
 Route::get('/products/detail/{id}', [ProductController::class, 'detailProduct'])->name('products.detail');
 Route::get('/products/approval', [ProductController::class, 'approval'])->name('products.approval');
 

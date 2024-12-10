@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\ProductSubCategory;
 use App\Models\ProductCategory;
+use App\Models\ProductComment;
 use Carbon\Carbon;
 use Illuminate\View\View;
 
@@ -36,6 +37,7 @@ class ProductController extends Controller
             'categories' => $categories
         ]);
     }
+    
     public function createProduct(Request $request)
     {
         // Validate input files
@@ -122,22 +124,19 @@ class ProductController extends Controller
 
         return redirect()->route('dashboard.user')->with('success', 'Product created successfully');
     }
+
     public function detailProduct($id, Request $request): View
     {
         $products = Product::with('productdesign')->where('id', $id)->orderBy('created_at', 'DESC')->first();
         // Add statusMsg dynamically to the product object
-        if ($products->status == 1) {
-            $products->statusMsg = 'approved';
-        } elseif ($products->status == 2) {
-            $products->statusMsg = 'pending';
-        } else {
-            $products->statusMsg = 'rejected';
-        }
+        $statusMsg = $this->productStatus($products);
+        $products->statusMsg = $statusMsg;
         return view('products.productDetail', [
             'user' => $request->user(),
             'products' => $products
         ]);
     }
+
     public function approval(Request $request)
     {
         // Get parameters
@@ -153,16 +152,33 @@ class ProductController extends Controller
             // Redirect back with a success message
             return redirect()->back()->with('success', 'Product approved successfully');
         } else if ($status == 3) {
-            $product = Product::find($id);
-            if ($product) {
-                $product->status = $status;
-                $product->save();
-            }
-            // Redirect back with a success message
-            return redirect()->back()->with('error', 'Product Rejected successfully');
+            $product = Product::with(['users', 'comments'])->where('id', $id)->orderBy('created_at', 'DESC')->first();
+            $statusMsg = $this->productStatus($product);
+            $product->statusMsg = $statusMsg;
+            $products = $product;
+            return view('products/productComment', compact('products'));
         }
         // Redirect back with an error message if the inputs are missing
         return redirect()->back()->with('error', 'Invalid product ID or status');
+    }
+
+    public function storeComment(Request $request)
+    {
+        $request->validate([
+            'comment' => 'required|min:10',
+        ]);
+        $product = Product::find($request->product_id);
+        if ($product) {
+            $product->status = 3;
+            $product->save();
+        }
+
+        ProductComment::create([
+            'product_id' => $request->product_id,
+            'user_id' => auth()->id(),
+            'comment' => $request->comment,
+        ]);
+        return back()->with('success', 'Comment added successfully!');
     }
 
     // Helper method to determine file type

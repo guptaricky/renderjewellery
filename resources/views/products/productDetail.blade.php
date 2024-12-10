@@ -70,9 +70,17 @@
       background-color: #28a745;
       color: white;
     }
+    .view-btn {
+      background-color: #007bff;
+      color: white;
+    }
 
     .approve-btn:hover {
       background-color: #218838;
+      transform: scale(1.05);
+    }
+    .view-btn:hover {
+      background-color: #007bff;
       transform: scale(1.05);
     }
 
@@ -224,6 +232,7 @@
                 <br>
                 <p class="text-sm">Status <b>{{ $products->statusMsg }}</b></p>
                 <p class="text-sm">Category <b>{{ $products->category->name }}</b></p>
+                <p class="text-sm">Product Title <b>{{ $products->title }}</b></p>
 
                 <h5 class="mt-5 text-muted">Product Files</h5>
                 <ul class="list-unstyled">
@@ -245,6 +254,11 @@
                   <a href="{{ route('products.approval',  ['id' => $products->id, 'status' => 3]) }}">
                     <button type="button" class="reject-btn">Reject</button>
                   </a>
+                  <!-- @if($products->status == 1)
+                  <a href="{{ route('products.approval',  ['id' => $products->id, 'status' => 3]) }}">
+                    <button type="button" class="view-btn">view comments</button>
+                  </a>
+                  @endif -->
                 </div>
               </div>
             </div>
