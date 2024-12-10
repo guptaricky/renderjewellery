@@ -144,14 +144,22 @@ class ProductController extends Controller
         $id = $request->input('id');
         $status = $request->input('status');
         // Process the logic only if `id` and `status` are present
-        if ($id && $status) {
+        if ($status == 1) {
             $product = Product::find($id);
             if ($product) {
-                $product->status = 2;
+                $product->status = $status;
                 $product->save();
             }
             // Redirect back with a success message
             return redirect()->back()->with('success', 'Product approved successfully');
+        } else if ($status == 3) {
+            $product = Product::find($id);
+            if ($product) {
+                $product->status = $status;
+                $product->save();
+            }
+            // Redirect back with a success message
+            return redirect()->back()->with('error', 'Product Rejected successfully');
         }
         // Redirect back with an error message if the inputs are missing
         return redirect()->back()->with('error', 'Invalid product ID or status');

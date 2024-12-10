@@ -242,7 +242,7 @@
                     <button type="button" class="approve-btn">Approve</button>
                   </a>
                   @endif
-                  <a href="{{ route('products.approval',  ['id' => $products->id, 'status' => 1]) }}">
+                  <a href="{{ route('products.approval',  ['id' => $products->id, 'status' => 3]) }}">
                     <button type="button" class="reject-btn">Reject</button>
                   </a>
                 </div>
