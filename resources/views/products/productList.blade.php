@@ -44,7 +44,7 @@
                                             <tr>
                                                 <th style="width: 10px">#</th>
                                                 <th>Product</th>
-                                                <th>Product Code</th>
+                                                <th>Code</th>
                                                 <th>Created By</th>
                                                 <th>Content</th>
                                                 <th>Price (&#8377;)</th>
