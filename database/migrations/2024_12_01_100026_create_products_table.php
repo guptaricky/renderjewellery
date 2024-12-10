@@ -22,10 +22,12 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('subcategory_id');
             $table->string('product_code');
-            $table->string('designer_name',50);
+            $table->string('designer_name', 50);
             $table->string('weight', 20);
             $table->string('dimensions', 100);
             $table->timestamps();
+            $table->enum('status', ['1', '2', '3'])->default('2')
+                ->comment('1 for approved, 2 for pending, 3 for rejected');
         });
     }
 

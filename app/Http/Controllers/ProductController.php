@@ -125,11 +125,38 @@ class ProductController extends Controller
     public function detailProduct($id, Request $request): View
     {
         $products = Product::with('productdesign')->where('id', $id)->orderBy('created_at', 'DESC')->first();
+        // Add statusMsg dynamically to the product object
+        if ($products->status == 1) {
+            $products->statusMsg = 'approved';
+        } elseif ($products->status == 2) {
+            $products->statusMsg = 'pending';
+        } else {
+            $products->statusMsg = 'rejected';
+        }
         return view('products.productDetail', [
             'user' => $request->user(),
             'products' => $products
         ]);
     }
+    public function approval(Request $request)
+    {
+        // Get parameters
+        $id = $request->input('id');
+        $status = $request->input('status');
+        // Process the logic only if `id` and `status` are present
+        if ($id && $status) {
+            $product = Product::find($id);
+            if ($product) {
+                $product->status = 2;
+                $product->save();
+            }
+            // Redirect back with a success message
+            return redirect()->back()->with('success', 'Product approved successfully');
+        }
+        // Redirect back with an error message if the inputs are missing
+        return redirect()->back()->with('error', 'Invalid product ID or status');
+    }
+
     // Helper method to determine file type
     private function getFileType($mimeType)
     {

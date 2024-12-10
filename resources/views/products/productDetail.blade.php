@@ -1,5 +1,6 @@
 <x-app-layout>
   <style>
+    /* General carousel styles */
     .carousel {
       position: relative;
       max-width: 600px;
@@ -19,6 +20,7 @@
       border-radius: 10px;
     }
 
+    /* Carousel navigation buttons */
     .carousel-controls {
       position: absolute;
       top: 50%;
@@ -29,7 +31,8 @@
       z-index: 1;
     }
 
-    .prev, .next {
+    .prev,
+    .next {
       background-color: rgba(0, 0, 0, 0.5);
       color: white;
       border: none;
@@ -40,11 +43,13 @@
       transition: background-color 0.3s ease, transform 0.3s ease;
     }
 
-    .prev:hover, .next:hover {
+    .prev:hover,
+    .next:hover {
       background-color: rgba(0, 0, 0, 0.7);
       transform: scale(1.1);
     }
 
+    /* Action buttons styling */
     .action-buttons {
       display: flex;
       justify-content: space-around;
@@ -81,6 +86,7 @@
       transform: scale(1.05);
     }
 
+    /* Info box styling */
     .info-box {
       border-radius: 10px;
       margin-bottom: 15px;
@@ -104,6 +110,7 @@
       color: #495057;
     }
 
+    /* General text styles */
     .text-muted {
       color: #6c757d;
     }
@@ -112,10 +119,7 @@
       color: #007bff;
     }
 
-    .card-body {
-      padding: 30px;
-    }
-
+    /* Breadcrumbs styling */
     .breadcrumb-item a {
       color: #007bff;
       text-decoration: none;
@@ -128,6 +132,7 @@
 
   <div class="wrapper">
     <div class="content-wrapper">
+      <!-- Page Header -->
       <div class="content-header">
         <div class="container-fluid">
           <div class="row mb-2">
@@ -144,16 +149,35 @@
         </div>
       </div>
 
+      <!-- Main Content -->
       <section class="content">
         <div class="card">
           <div class="card-body">
+            @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              {{ session('success') }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              {{ session('error') }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            @endif
             <div class="row">
+              <!-- Product Details Section -->
               <div class="col-12 col-md-8">
                 <div class="row">
                   <div class="col-12 col-sm-4">
                     <div class="info-box">
                       <div class="info-box-content">
-                        <span class="info-box-text">Product Price</span>
+                        <span class="info-box-text">Expected Price</span>
                         <span class="info-box-number">{{ $products->price }}</span>
                       </div>
                     </div>
@@ -169,12 +193,13 @@
                   <div class="col-12 col-sm-4">
                     <div class="info-box">
                       <div class="info-box-content">
-                        <span class="info-box-text">Designed By -> </span>
+                        <span class="info-box-text">Designed By</span>
                         <span class="info-box-number">{{ $products->designer_name }}</span>
                       </div>
                     </div>
                   </div>
                 </div>
+                <!-- Carousel Section -->
                 <div class="row">
                   <div class="col-12">
                     <div class="carousel">
@@ -184,7 +209,7 @@
                       </div>
                       <div class="carousel-slides">
                         @foreach ($products->productdesign as $design)
-                        <img src="{{ Vite::asset('storage/app/public/').$design['file_path'] }}" class="img-fluid active" alt="Product Image">
+                        <img src="{{ Vite::asset('storage/app/public/' . $design['file_path']) }}" class="img-fluid active" alt="Product Image">
                         @endforeach
                       </div>
                     </div>
@@ -192,16 +217,13 @@
                 </div>
               </div>
 
+              <!-- Sidebar Section -->
               <div class="col-12 col-md-4">
                 <h3 class="text-primary">Description</h3>
                 <p class="text-muted">{{ substr($products->description, 0, 300) }}...</p>
                 <br>
-                <p class="text-sm">Designed By  
-                  <b>{{ $products->designer_name }}</b>
-                </p>
-                <p class="text-sm">Category  
-                  <b>{{ $products->category->name }}</b>
-                </p>
+                <p class="text-sm">Status <b>{{ $products->statusMsg }}</b></p>
+                <p class="text-sm">Category <b>{{ $products->category->name }}</b></p>
 
                 <h5 class="mt-5 text-muted">Product Files</h5>
                 <ul class="list-unstyled">
@@ -212,11 +234,15 @@
                   @endforeach
                 </ul>
 
+                <!-- Action Buttons -->
                 <div class="action-buttons">
-                  <a href="{{ route('products.detail',[1]) }}">
+
+                  @if($products->status != 1)
+                  <a href="{{ route('products.approval', ['id' => $products->id, 'status' => 1]) }}">
                     <button type="button" class="approve-btn">Approve</button>
                   </a>
-                  <a href="{{ route('products.detail',[1]) }}">
+                  @endif
+                  <a href="{{ route('products.detail', [1]) }}">
                     <button type="button" class="reject-btn">Reject</button>
                   </a>
                 </div>

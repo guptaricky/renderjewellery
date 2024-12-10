@@ -25,7 +25,8 @@ class Product extends Model
         'designer_id',
         'weight',
         'dimensions',
-        'design_count'
+        'design_count',
+        'status'
     ];
 
     // Disable timestamps if not required (optional)
