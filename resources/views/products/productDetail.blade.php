@@ -70,6 +70,7 @@
       background-color: #28a745;
       color: white;
     }
+
     .view-btn {
       background-color: #007bff;
       color: white;
@@ -79,6 +80,7 @@
       background-color: #218838;
       transform: scale(1.05);
     }
+
     .view-btn:hover {
       background-color: #007bff;
       transform: scale(1.05);
