@@ -58,6 +58,7 @@
                       <th>Product Title</th>
                       <th>Designes</th>
                       <th>Price</th>
+                      <th>Status</th>
                       <th>Sales</th>
                       <th>Designer</th>
                       <th>Category</th>
@@ -80,6 +81,15 @@
                         @endforeach
                       </td>
                       <td>(&#8377;){{ $product->price }}</td>
+                      <td>
+                        @if ($product->status == 1)
+                        <span class="badge badge-success">Approved</span>
+                        @elseif ($product->status == 2)
+                        <span class="badge badge-warning">Pending</span>
+                        @else
+                        <span class="badge badge-danger">Rejected</span>
+                        @endif
+                      </td>
                       <td>
                         <small class="text-success mr-1">
                           <i class="fas fa-arrow-up"></i>
