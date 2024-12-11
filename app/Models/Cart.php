@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductDesign extends Model
+class Cart extends Model
 {
     use HasFactory;
+    
+    protected $fillable = ['product_id', 'user_id' , 'quantity'];
 
-    protected $fillable = [
-        'product_id',
-        'file_name',
-        'file_path',
-        'mime_type',
-        'file_type'
-    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function product()
     {

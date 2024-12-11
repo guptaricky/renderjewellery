@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -22,6 +23,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'plan_id',
     ];
 
     /**
@@ -57,10 +59,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Plans::class);
     }
 
-    public function hasRole($role)
+    public function hasRole($roles)
     {
-        // return true;
-        return $this->roles()->where('name', $role)->exists();
+        Log::info("in hasRole method");
+        Log::info($roles);
+        // if (empty($roles)) {
+        //     return redirect()->route('login')->send();
+        // }
+        return $this->roles()->whereIn('name', (array) $roles)->exists();
     }
 
     // Implement the syncRoles method

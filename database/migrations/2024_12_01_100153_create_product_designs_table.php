@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('file_name'); // File name for reference
             $table->string('file_path'); // File path for reference
             $table->string('mime_type'); // Mime Type for reference
+            $table->string('file_type'); // File type for reference (e.g., image, video)
             $table->timestamps();
         });
     }

@@ -25,7 +25,8 @@ class Product extends Model
         'designer_id',
         'weight',
         'dimensions',
-        'design_count'
+        'design_count',
+        'status'
     ];
 
     // Disable timestamps if not required (optional)
@@ -39,5 +40,22 @@ class Product extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItems::class, 'product_id');
+    }
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class, 'category_id');
+    }
+
+    public function subcategory()
+    {
+        return $this->belongsTo(ProductSubCategory::class, 'subcategory_id');
+    }
+    public function comments()
+    {
+        return $this->hasMany(ProductComment::class);
     }
 }

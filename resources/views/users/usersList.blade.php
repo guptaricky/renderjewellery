@@ -6,17 +6,16 @@
                     <div class="row mb-2">
                         <div class="col-sm-6">
                             <h1 class="m-0">Manage Users</h1>
-                        </div><!-- /.col -->
+                        </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
                                 <li class="breadcrumb-item active">Users</li>
                             </ol>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- /.content-header -->
 
             <!-- Main content -->
             <section class="content">
@@ -27,16 +26,15 @@
                                 <div class="card-header">
                                     <h3 class="card-title">Users List</h3>
                                 </div>
-                                <!-- /.card-header -->
 
-                                <!-- Filter and Search Form (single line) -->
+                                <!-- Filter and Search Form -->
                                 <form method="GET" action="{{ route('user.list') }}">
                                     <div class="card-body">
                                         <div class="form-row">
                                             <!-- Search Input -->
                                             <div class="form-group col-md-4">
                                                 <label for="searchtext">Search:</label>
-                                                <input type="text" class="form-control" id="searchtext" name="searchtext" value="{{ old('searchtext', $searchtext) }}" placeholder="Search by name or email">
+                                                <input type="text" class="form-control" id="searchtext" name="searchtext" placeholder="Search by name or email">
                                             </div>
 
                                             <!-- Filter by Role -->
@@ -45,7 +43,18 @@
                                                 <select class="form-control" id="role" name="role">
                                                     <option value="">All Roles</option>
                                                     @foreach($roles as $role)
-                                                        <option value="{{ $role->name }}" {{ $role->name == $roleFilter ? 'selected' : '' }}>{{ $role->name }}</option>
+                                                    <option value="{{ $role->name }}" {{ $role->name == $roleFilter ? 'selected' : '' }}>{{ $role->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <!-- Filter by Plan -->
+                                            <div class="form-group col-md-3">
+                                                <label for="plan">Filter by Plan:</label>
+                                                <select class="form-control" id="plan" name="plan">
+                                                    <option value="">All Plans</option>
+                                                    @foreach($plans as $plan)
+                                                    <option value="{{ $plan->name }}" {{ $plan->name == $planFilter ? 'selected' : '' }}>{{ $plan->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -57,15 +66,15 @@
                                         </div>
                                     </div>
                                 </form>
-                                <!-- /.form -->
 
                                 <!-- Success Message -->
                                 @if(session('success'))
-                                    <div class="alert alert-success">
-                                        {{ session('success') }}
-                                    </div>
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
                                 @endif
 
+                                <!-- Search Results -->
                                 <div class="card-body">
                                     <table class="table">
                                         <thead>
@@ -78,42 +87,81 @@
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="user-table-body">
                                             @foreach($users as $index => $user)
-                                                <tr>
-                                                    <td>{{ $index + 1 }}.</td>
-                                                    <td>{{ $user->name }}</td>
-                                                    <td>{{ $user->email }}</td>
-                                                    <td>
-                                                        @foreach($user->roles as $role)
-                                                            {{ $role->name }}
-                                                        @endforeach
-                                                    </td>
-                                                    <td>
-                                                        @if($user->plan != null)
-                                                            {{ $user->plan['name'] }}
-                                                        @else
-                                                            NA
-                                                        @endif
-                                                    </td>
-                                                    <td><a href="{{ route('user.details', ['id' => $user->id]) }}">
+                                            <tr>
+                                                <td>{{ $index + 1 }}.</td>
+                                                <td>{{ $user->name }}</td>
+                                                <td>{{ $user->email }}</td>
+                                                <td>
+                                                    @foreach($user->roles as $role)
+                                                    {{ $role->name }}
+                                                    @endforeach
+                                                </td>
+                                                <td>
+                                                    @if($user->plan != null)
+                                                    {{ $user->plan['name'] }}
+                                                    @else
+                                                    NA
+                                                    @endif
+                                                </td>
+                                                <td><a href="{{ route('user.details', ['id' => $user->id]) }}">
                                                         <button type="button" class="btn btn-sm btn-outline-info">View Details</button>
                                                     </a></td>
-                                                </tr>
+                                            </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
                                 </div>
-                                <!-- /.card-body -->
                             </div>
-                            <!-- /.card -->
                         </div>
-                        <!--/.col (right) -->
                     </div>
-                    <!-- /.row -->
                 </div>
             </section>
-            <!-- /.content -->
         </div>
     </div>
+
+    <!-- Dynamic Search Script -->
+    <script>
+        document.getElementById('searchtext').addEventListener('input', function() {
+            const searchText = this.value;
+            const roleFilter = document.getElementById('role').value;
+            const planFilter = document.getElementById('plan').value;
+
+            fetch(`{{ route('user.search') }}?searchtext=${encodeURIComponent(searchText)}&role=${encodeURIComponent(roleFilter)}&plan=${encodeURIComponent(planFilter)}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('user-table-body');
+                    tbody.innerHTML = ''; // Clear the table body
+
+                    if (data.users.length > 0) {
+                        data.users.forEach((user, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                        <td>${index + 1}.</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.roles.map(role => role.name).join(', ')}</td>
+                        <td>${user.plan ? user.plan.name : 'NA'}</td>
+                        <td>
+                        @if(isset($user->id))
+                        <a href="{{ route('user.details', ['id' => $user->id]) }}"><button type="button" class="btn btn-sm btn-outline-info">View Details</button></a>
+                        @endif
+                        </td>
+                    `;
+                            tbody.appendChild(row);
+                        });
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center">No users found.</td></tr>';
+                    }
+                })
+                .catch(error => console.error('Error fetching users:', error));
+
+        });
+    </script>
 </x-app-layout>

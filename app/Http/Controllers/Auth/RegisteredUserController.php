@@ -51,10 +51,18 @@ class RegisteredUserController extends Controller
             'role_id' => $request->role,
         ]);
 
+        $getUserName = Role::where('id', $request->role)->select('name')->first();
+
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        if(in_array($getUserName->name, ['Admin', 'SuperAdmin'])){
+            return redirect(route('dashboard.admin', absolute: false));
+        }
+        else{
+            return redirect(route('dashboard.user', absolute: false));
+        }
+        
     }
 }

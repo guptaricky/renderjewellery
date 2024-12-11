@@ -15,14 +15,16 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+
     public function userList(Request $request)
     {
-        $roleFilter = $request->query('role', '');  // Default to empty if not present
-        $searchtext = $request->query('searchtext', '');  // Default to empty if not present
+        $roleFilter = $request->query('role', '');
+        $planFilter = $request->query('plan', '');
+        $searchtext = $request->query('searchtext', '');
 
         $authUser = Auth::user();  // Get the currently logged-in user
 
-        // Build base query for roles
+        // Fetch roles and plans
         $rolesQuery = Role::query();
         if ($authUser->hasRole('Admin')) {
             $rolesQuery->whereNotIn('name', ['SuperAdmin', 'Admin']);
@@ -30,12 +32,13 @@ class UserController extends Controller
         if ($authUser->hasRole('SuperAdmin')) {
             $rolesQuery->where('name', '!=', 'SuperAdmin');
         }
-        $roles = $rolesQuery->get();  // Fetch the roles
+        $roles = $rolesQuery->get();
 
-        // Build the base query for users
+        $plans = Plans::all();
+
+        // Base query for users
         $usersQuery = User::with('roles', 'plan');
 
-        // Filter out the logged-in user or SuperAdmins/Admins based on roles
         if ($authUser->hasRole('SuperAdmin')) {
             $usersQuery->where('id', '!=', $authUser->id);  // Exclude SuperAdmin itself
         }
@@ -46,14 +49,20 @@ class UserController extends Controller
             });  // Exclude SuperAdmins and Admins for Admin users
         }
 
-        // Apply role filter if selected
+        // Apply role and plan filters if they are set
         if ($roleFilter !== '') {
             $usersQuery->whereHas('roles', function ($roleQuery) use ($roleFilter) {
                 $roleQuery->where('name', $roleFilter);
             });
         }
 
-        // Apply search text filter if entered
+        if ($planFilter !== '') {
+            $usersQuery->whereHas('plan', function ($planQuery) use ($planFilter) {
+                $planQuery->where('name', $planFilter);
+            });
+        }
+
+        // Apply search filter
         if ($searchtext !== '') {
             $usersQuery->where(function ($query) use ($searchtext) {
                 $query->where('name', 'like', '%' . $searchtext . '%')
@@ -61,19 +70,42 @@ class UserController extends Controller
             });
         }
 
-        // Execute the query to get filtered users
+        // Fetch filtered users
         $users = $usersQuery->get();
 
-        // Pass the data to the view
+        // If the request is AJAX, return JSON response
+        if ($request->ajax()) {
+            return response()->json([
+                'users' => $users,
+                'roles' => $roles,
+                'plans' => $plans,
+                'roleFilter' => $roleFilter,
+                'planFilter' => $planFilter,
+                'searchtext' => $searchtext,
+            ]);
+        }
+
+        // Otherwise, return the view
         return view('users.usersList', [
             'users' => $users,
-            'roles' => $roles,  // Pass roles to the view
+            'roles' => $roles,
+            'plans' => $plans,
             'roleFilter' => $roleFilter,
-            'searchtext' => $searchtext
+            'planFilter' => $planFilter,
+            'searchtext' => $searchtext,
         ]);
     }
 
+    public function search(Request $request)
+    {
+        // If the request is an AJAX request, return the users as JSON
+        if ($request->ajax()) {
+            return $this->userList($request);  // Call userList and pass the request to it
+        }
 
+        // If it's not an AJAX request, proceed as usual (return a view or something else)
+        return view('users.usersList');
+    }
 
     public function userDetails($id)
     {
@@ -82,40 +114,33 @@ class UserController extends Controller
             ->first();
 
         $uploaded_designes = Product::with('productdesign')
-        ->where('user_id', $id)
-        ->orderBy('created_at','desc')
-        ->get();
+            ->where('user_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         $purchased_designes = Orders::with('items')
-        ->where('user_id', $id)
-        ->orderBy('created_at','desc')
-        ->get();
+            ->where('user_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-         // dd($uploaded_designes);
-         $design_count = Product::where('user_id', $id)
-         ->sum('design_count');
 
-        // $createdProducts = Product::where('user_id', $id)
-        //     ->withCount(['orderItems as purchased_quantity' => function ($query) {
-        //         $query->select(DB::raw('SUM(quantity)'));
-        //     }])
-        //     ->get();
+        // $product_count = Product::withCount('product')->where('user_id', $id)
+        // ->sum('design_count');
 
-        // dd($createdProducts);
-        $design_count = Product::where('user_id', $id)
-        ->sum('design_count');
+        $purchased_count = Orders::where('user_id', $id)
+            ->sum('order_number');
 
         if (!$user) {
             return back()->withErrors('User not found.');
         }
 
-        $uploaded_designes = array_merge($uploaded_designes->toArray(),$purchased_designes->toArray());
+        $uploaded_designes = array_merge($uploaded_designes->toArray(), $purchased_designes->toArray());
         // dd($uploaded_designes);
         return view('users/details', [
             'user' => $user,
             'uploaded_designes' => $uploaded_designes,
-            // 'purchased_designes' => $purchased_designes,
-            'design_count' => $design_count
+            // 'product_count' => $product_count,
+            'purchased_count' => $purchased_count
         ]);
     }
 
@@ -126,14 +151,14 @@ class UserController extends Controller
             ->first();
 
         $uploaded_designes = Product::where('user_id', $id)->where('id', $upload_id)
-        ->orderBy('created_at','desc')
-        ->first();
+            ->orderBy('created_at', 'desc')
+            ->first();
 
         // dd($uploaded_designes);
 
         $designes = ProductDesign::where('product_id', $upload_id)
-        ->orderBy('created_at','desc')
-        ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
 
         if (!$user) {
@@ -185,7 +210,7 @@ class UserController extends Controller
     }
 
     // Update the user's roles
-    public function update(Request $request, User $user)
+    public function updateRoles(Request $request, User $user)
     {
         $request->validate([
             'roles' => 'required|array',

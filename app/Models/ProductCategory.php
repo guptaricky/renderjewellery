@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Plans extends Model
+class ProductCategory extends Model
 {
     use HasFactory;
 
@@ -15,9 +15,11 @@ class Plans extends Model
         'isActive',
     ];
 
-    public function users()
+    /**
+     * Get the subcategories for the product category.
+     */
+    public function subcategories()
     {
-        return $this->hasMany(User::class, 'plan_id');
+        return $this->hasMany(ProductSubCategory::class, 'category_id');
     }
-
 }
