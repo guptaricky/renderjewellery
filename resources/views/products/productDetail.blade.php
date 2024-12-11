@@ -147,7 +147,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0"><b>Product Details</b></h1>
+              <h1 class="m-0"><b>{{ $products->title }}</b></h1>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
@@ -232,9 +232,9 @@
                 <h3 class="text-primary">Description</h3>
                 <p class="text-muted">{{ substr($products->description, 0, 300) }}...</p>
                 <br>
-                <p class="text-sm">Status <b>{{ $products->statusMsg }}</b></p>
-                <p class="text-sm">Category <b>{{ $products->category->name }}</b></p>
-                <p class="text-sm">Product Title <b>{{ $products->title }}</b></p>
+                <p class="text-sm">Status : <b class='text-green'>{{ ucwords($products->statusMsg) }}</b></p>
+                <p class="text-sm">Category/Sub-category : <b>{{ ucwords($products->category->name) }}/{{ ucwords($products->subcategory->name) }}</b></p>
+                <p class="text-sm">Product Code : <b>{{ strtoupper($products->product_code.$products->category->code.$products->subcategory->code) }}</b></p>
 
                 <h5 class="mt-5 text-muted">Product Files</h5>
                 <ul class="list-unstyled">
@@ -245,22 +245,11 @@
                   @endforeach
                 </ul>
 
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-
-                  @if($products->status != 1)
-                  <a href="{{ route('products.approval', ['id' => $products->id, 'status' => 1]) }}">
-                    <button type="button" class="approve-btn">Approve</button>
-                  </a>
+                <div class="text-center mt-5 mb-3">
+                  @if($products->status != 2)
+                  <a href="{{ route('products.approval', ['id' => $products->id, 'status' => 2]) }}" class="btn btn-sm btn-primary">Approve</a>
                   @endif
-                  <a href="{{ route('products.approval',  ['id' => $products->id, 'status' => 3]) }}">
-                    <button type="button" class="reject-btn">Reject</button>
-                  </a>
-                  <!-- @if($products->status == 1)
-                  <a href="{{ route('products.approval',  ['id' => $products->id, 'status' => 3]) }}">
-                    <button type="button" class="view-btn">view comments</button>
-                  </a>
-                  @endif -->
+                  <a href="{{ route('products.approval',  ['id' => $products->id, 'status' => 3]) }}" class="btn btn-sm btn-danger">Reject</a>
                 </div>
               </div>
             </div>

@@ -6,12 +6,11 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>E-commerce</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">E-commerce</li>
+              <li class="breadcrumb-item active">Add to cart</li>
             </ol>
           </div>
         </div>
@@ -38,37 +37,97 @@
                 @endforeach
               </div>
             </div>
+            
             <div class="col-12 col-sm-6">
               <h3 class="my-3">{{ $products['title']}}</h3>
               <p>{{ $products['short_description'] }}</p>
 
               <hr>
-              <h4>3D Model Formats</h4>
-              <div class="col-md-6">
-                <div class="card card-success">
-                  
-                  <!-- /.card-header -->
-                  <div class="card-body">
-                    3D Model Formats
+              <div class="row">
+                <div class="col-12 col-sm-7">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">
+                        <i class="fas fa-text-width"></i>
+                        3D Model Formats
+                      </h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                      <ul class="nav flex-column">
+                        <li class="nav-item">
+                          <span class="nav-link">
+                            Stereolithography (.stl) (6 files) <span class="float-right text-muted"><strong>31 MB</strong></span>
+                          </span>
+                        </li>
+                        <li class="nav-item">
+                          <span class="nav-link">
+                            Rhinoceros 3D (.3dm) (6 files) <span class="float-right text-muted"><strong>5 MB</strong></span>
+                          </span>
+                        </li>
+                        <li class="nav-item">
+                          <span class="nav-link">
+                            OBJ (.obj, .mtl) (12 files) <span class="float-right text-muted"><strong>12 MB</strong></span>
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                    <!-- /.card-body -->
                   </div>
-                  <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
+                <div class="col-12 col-sm-5">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">
+                        <i class="fas fa-text-width"></i>
+                        3D Model Details
+                      </h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                      <ul class="nav flex-column">
+                        <li class="nav-item">
+                          <span class="nav-link">
+                            Publish Date <span class="float-right text-muted"><strong>{{ $products['created_at']}}</strong></span>
+                          </span>
+                        </li>
+                        <li class="nav-item">
+                          <span class="nav-link">
+                            Model ID <span class="float-right text-muted"><strong>{{ strtoupper($products['product_code'])}}</strong></span>
+                          </span>
+                        </li>
+                        <li class="nav-item">
+                          <span class="nav-link">
+                            Ready for 3D Printing <span class="float-right text-muted"><strong><i class="fas fa-check-circle text-success"></i></strong></span>
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                    <!-- /.card-body -->
+                  </div>
+                </div>
               </div>
+              
 
               
 
               <div class="bg-green py-2 px-3 mt-4">
                 <h2 class="mb-0">
-                  $80.00
+                  &#8377;{{ $products['price']}}
                 </h2>
                 <h4 class="mt-0">
-                  <small>Ex Tax: $80.00 </small>
+                  <small>GST: &#8377;80.00 </small>
                 </h4>
               </div>
 
               <div class="mt-4">
-                <div class="btn btn-primary btn-lg btn-flat">
+                <meta name="csrf-token" content="{{ csrf_token() }}">
+
+                <div>
+                    <input type="hidden" id="product-id" value={{ $products['id']}}> <!-- Replace 123 with the actual product ID -->
+                    <input type="hidden" id="quantity" value="1" min="1" class="form-control" placeholder="Enter quantity">
+                </div>
+                <div class="btn btn-primary btn-lg btn-flat" id="add-to-cart-btn">
                   <i class="fas fa-cart-plus fa-lg mr-2"></i>
                   Add to Cart
                 </div>
@@ -119,4 +178,6 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+
+
 </x-app-layout>

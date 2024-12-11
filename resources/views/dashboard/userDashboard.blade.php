@@ -39,17 +39,7 @@
           <div class="col-lg-12">
 
             <div class="card">
-              <div class="card-header border-0">
-                <h3 class="card-title">Products</h3>
-                <div class="card-tools">
-                  <a href="#" class="btn btn-tool btn-sm">
-                    <i class="fas fa-download"></i>
-                  </a>
-                  <a href="#" class="btn btn-tool btn-sm">
-                    <i class="fas fa-bars"></i>
-                  </a>
-                </div>
-              </div>
+              
               <div class="card-body table-responsive p-0">
                 <table class="table table-striped project">
                   <thead>
@@ -73,19 +63,19 @@
                       </td>
                       <td>
                         {{-- <img src="{{ Vite::asset("public/dist/img/default-150x150.png")}}" alt="Product 1" class="img-circle img-size-32 mr-2"> --}}
-                        <a>{{ $product->title }}</a></br><small>{{ $product->product_code }}</small>
+                        <a class="lead">{{ $product->title }}</a></br><small>code : <cite title={{ $product->product_code }}>{{ $product->product_code }}</cite></small>
                       </td>
                       <td>
                         @foreach ($product->productdesign as $designes)
-                        <img src="{{ Vite::asset('storage/app/public/').$designes['file_path'] }}" class="img-circle img-size-32 mr-2">
+                        <img src="{{ Vite::asset('storage/app/public/').$designes['file_path'] }}" class="img-size-32 mr-2">
                         @endforeach
                       </td>
                       <td>(&#8377;){{ $product->price }}</td>
                       <td>
                         @if ($product->status == 1)
-                        <span class="badge badge-success">Approved</span>
+                        <span class="badge badge-primary">Pending</span>
                         @elseif ($product->status == 2)
-                        <span class="badge badge-warning">Pending</span>
+                        <span class="badge badge-success">Approved</span>
                         @else
                         <span class="badge badge-danger">Rejected</span>
                         @endif

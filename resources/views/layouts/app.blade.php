@@ -94,5 +94,28 @@
               })
             })
           </script>
+          <script>
+            $(document).ready(function () {
+                $('#add-to-cart-btn').click(function () {
+                    const productId = $('#product-id').val();
+                    const quantity = $('#quantity').val();
+                    const csrfToken = $('meta[name="csrf-token"]').attr('content');
+            
+                    // AJAX request
+                    $.ajax({
+                        url: '/cart/add',
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': csrfToken },
+                        data: { product_id: productId, quantity: quantity },
+                        success: function (response) {
+                            alert(response.message);
+                        },
+                        error: function (xhr) {
+                            alert('Error: ' + xhr.responseJSON.message);
+                        }
+                    });
+                });
+            });
+            </script>
     </body>
 </html>

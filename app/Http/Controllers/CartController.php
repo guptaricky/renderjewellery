@@ -4,17 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
     public function addToCart(Request $request)
     {
         $cart = Cart::updateOrCreate(
-            ['product_id' => $request->product_id],
-            ['quantity' => $request->quantity]
+            [
+                'user_id' => Auth::user()->id,
+                'product_id' => $request->product_id,
+            ],
+            [
+                'quantity' => DB::raw('quantity + ' . $request->quantity),
+            ]
         );
 
-        return response()->json(['success' => 'Product added to cart!', 'cart' => $cart]);
+        return response()->json(['message' => 'Product added to cart!', 'cart' => $cart]);
     }
 
     public function viewCart()

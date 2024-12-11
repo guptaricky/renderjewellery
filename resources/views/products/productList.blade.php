@@ -68,9 +68,9 @@
                                                 <td>{{ $product->price }}</td>
                                                 <td>
                                                     @if ($product->status == 1)
-                                                    <span class="badge badge-success">Approved</span>
+                                                    <span class="badge badge-primary">Pending</span>
                                                     @elseif ($product->status == 2)
-                                                    <span class="badge badge-warning">Pending</span>
+                                                    <span class="badge badge-success">Approved</span>
                                                     @else
                                                     <span class="badge badge-danger">Rejected</span>
                                                     @endif

@@ -71,7 +71,7 @@ class ProductController extends Controller
         $uploadedImages = [];
 
         $product = new Product();
-        $product->user_id = 2; // Use the authenticated user's ID // $user_id = Auth::user()->id;
+        $product->user_id = Auth::user()->id;
         $product->title = $request->title;
         $product->description = $request->description;
         $product->short_description = $request->short_description;
@@ -143,7 +143,7 @@ class ProductController extends Controller
         $id = $request->input('id');
         $status = $request->input('status');
         // Process the logic only if `id` and `status` are present
-        if ($status == 1) {
+        if ($status == 2) {
             $product = Product::find($id);
             if ($product) {
                 $product->status = $status;
