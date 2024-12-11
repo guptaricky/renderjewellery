@@ -181,6 +181,14 @@ class ProductController extends Controller
         return back()->with('success', 'Comment added successfully!');
     }
 
+    public function eCommerce($id, Request $request): View
+    {
+        $products = Product::with('productdesign')->where('id', $id)->orderBy('created_at', 'DESC')->first();
+        return view('products.eCommerce', [
+            'user' => $request->user(),
+            'products' => $products
+        ]);
+    }
     // Helper method to determine file type
     private function getFileType($mimeType)
     {

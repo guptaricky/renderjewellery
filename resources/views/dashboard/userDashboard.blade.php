@@ -100,7 +100,7 @@
                       <td>{{ $product->designer_name }}</td>
                       <td>{{ $product->category->code }}/{{ $product->subcategory->code }}</td>
                       <td>
-                        <a href="{{ route('products.detail',[$product->id]) }}" class="text-muted">
+                        <a href="{{ route('products.eCommerce',[$product->id]) }}" class="text-muted">
                           <i class="fas fa-search"></i>
                         </a>
                       </td>

@@ -7,6 +7,7 @@ use App\Models\Orders;
 use App\Models\OrderItems;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Razorpay\Api\Api;
 
 class OrderController extends Controller
 {
@@ -95,5 +96,30 @@ class OrderController extends Controller
         return view('orders/orderList',[
             'orders' => $orders
         ]);
+    }
+
+    public function verifyPayment(Request $request)
+    {
+        $signature = $request->razorpay_signature;
+        $paymentId = $request->razorpay_payment_id;
+        $orderId = $request->razorpay_order_id;
+
+        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+        $attributes = [
+            'razorpay_signature' => $signature,
+            'razorpay_payment_id' => $paymentId,
+            'razorpay_order_id' => $orderId
+        ];
+
+        try {
+            $api->utility->verifyPaymentSignature($attributes);
+
+            $order = Orders::where('order_id', $orderId)->first();
+            $order->update(['status' => 'completed']);
+
+            return response()->json(['success' => 'Payment verified successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Payment verification failed!']);
+        }
     }
 }
