@@ -55,7 +55,7 @@ Route::middleware(['auth', 'role:SuperAdmin,Admin'])->group(function () {
 
     //products
     Route::post('/products/storeComment', [ProductController::class, 'storeComment'])->name('products.storeComment');
-    Route::get('/products/approval', [ProductController::class, 'approval'])->name('products.approval');
+    Route::patch('/products/approval', [ProductController::class, 'approval'])->name('products.approval');
     Route::get('/products/detail/{id}', [ProductController::class, 'detailProduct'])->name('products.detail');
 
     Route::get('/user/list', [UserController::class, 'userList'])->name('user.list');
@@ -78,10 +78,12 @@ Route::middleware(['auth', 'role:Designer,Customer'])->group(function () {
     //cart
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
     Route::get('/cart', [CartController::class, 'viewCart'])->name('cart');
+    Route::get('/cart/count', [CartController::class, 'getCartCount'])->name('cart.count');
 
     //orders
-    Route::post('/orders/create', [OrderController::class, 'createOrder']);
-    Route::post('/orders/verify', [OrderController::class, 'verifyPayment']);
+    Route::post('/orders/create', [OrderController::class, 'createOrder'])->name('orders.create');
+    Route::get('/orders/order-summary/{order_id}', [OrderController::class, 'showOrderSummary'])->name('orders.order-summary');
+    Route::post('/orders/verify-payment', [OrderController::class, 'verifyPayment']);
 
     Route::get('/products/create', [ProductController::class, 'showCreateForm'])->name('products.create');
     Route::post('/products/create', [ProductController::class, 'createProduct'])->name('products.create');

@@ -9,9 +9,9 @@ abstract class Controller
     {
         $statusMsg = '';
         if ($products->status == 1) {
-            $statusMsg = 'approved';
-        } elseif ($products->status == 2) {
             $statusMsg = 'pending';
+        } elseif ($products->status == 2) {
+            $statusMsg = 'approved';
         } else {
             $statusMsg = 'rejected';
         }

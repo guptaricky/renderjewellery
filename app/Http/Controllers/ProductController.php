@@ -150,13 +150,32 @@ class ProductController extends Controller
                 $product->save();
             }
             // Redirect back with a success message
-            return redirect()->back()->with('success', 'Product approved successfully');
+            // return redirect()->back()->with('success', 'Product approved successfully');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product approved successfully'
+            ], 200);
         } else if ($status == 3) {
-            $product = Product::with(['users', 'comments'])->where('id', $id)->orderBy('created_at', 'DESC')->first();
-            $statusMsg = $this->productStatus($product);
-            $product->statusMsg = $statusMsg;
-            $products = $product;
-            return view('products/productComment', compact('products'));
+            $comments = $request->input('comment');
+            // $product = Product::with(['users', 'comments'])->where('id', $id)->orderBy('created_at', 'DESC')->first();
+            // $statusMsg = $this->productStatus($product);
+            // $product->statusMsg = $statusMsg;
+
+
+            $requestData = [
+                'product_id' => $id,
+                'comment' => $comments,
+            ];
+        
+            $request = new Request($requestData);
+            $message = $this->storeComment($request);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $message
+            ], 200);
+            // $products = $product;
+            // return view('products/productComment', compact('products'));
         }
         // Redirect back with an error message if the inputs are missing
         return redirect()->back()->with('error', 'Invalid product ID or status');
@@ -164,9 +183,10 @@ class ProductController extends Controller
 
     public function storeComment(Request $request)
     {
-        $request->validate([
-            'comment' => 'required|min:10',
-        ]);
+       
+        $product_id = $request->product_id;
+        $comment = $request->comment;
+    
         $product = Product::find($request->product_id);
         if ($product) {
             $product->status = 3;
@@ -174,9 +194,9 @@ class ProductController extends Controller
         }
 
         ProductComment::create([
-            'product_id' => $request->product_id,
-            'user_id' => auth()->id(),
-            'comment' => $request->comment,
+            'product_id' => $product_id,
+            'user_id' => Auth::user()->id,
+            'comment' => $comment,
         ]);
         return back()->with('success', 'Comment added successfully!');
     }
