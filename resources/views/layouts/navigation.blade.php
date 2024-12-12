@@ -20,12 +20,19 @@
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
       </li>
-        <li class="nav-item d-none d-sm-inline-block">
+      <li class="nav-item d-none d-sm-inline-block">
+        <x-dropdown-link :href="route('cart')">
+            <i class="fas fa-shopping-cart"><span id="cart-count" style="font-family:'Source Sans Pro';font-size: 12px; color: white; background: red; border-radius: 50%; padding: 2px 5px; position: absolute; top: 2px; right: 6px;">
+              0
+          </span></i>
+        </x-dropdown-link>
+    </li>
+      <li class="nav-item d-none d-sm-inline-block">
           <x-dropdown-link :href="route('profile.view')">
               {{ __('Profile') }}
           </x-dropdown-link>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
           <form method="POST" action="{{ route('logout') }}">
               @csrf
 
@@ -35,6 +42,6 @@
                   {{ __('Log Out') }}
               </x-dropdown-link>
           </form>
-        </li>
+      </li>
     </ul>
   </nav>

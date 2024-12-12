@@ -91,7 +91,56 @@
                 $('.product-image').prop('src', $image_element.attr('src'))
                 $('.product-image-thumb.active').removeClass('active')
                 $(this).addClass('active')
-              })
+              });
+
+              function updateCartCount() {
+                    $.ajax({
+                        url: "{{ route('cart.count') }}",
+                        type: "GET",
+                        success: function (response) {
+                            $('#cart-count').text(response.count);
+                        },
+                        error: function () {
+                            console.error('Failed to fetch cart count.');
+                        }
+                    });
+                }
+
+                updateCartCount();
+
+                $(document).on('click', '#add-to-cart-btn', function () {
+                    updateCartCount();
+                });
+
+            
+            $("#checkoutButton").on("click", function () {
+            const orderData = {
+                user_id: {{ Auth::user()->id}},
+                payment_method: "razorpay"
+            };
+
+            fetch('{{ route('orders.create') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',  // Include CSRF token
+            },
+            body: JSON.stringify(orderData)  // Pass the order data as a JSON string
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to the order summary page (or payment page) after order creation
+                    window.location.href = '/orders/order-summary/' + data.order_number;
+                } else {
+                    alert('Failed to create order: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while creating the order.');
+            });
+            });
             })
           </script>
           <script>
@@ -116,6 +165,62 @@
                     });
                 });
             });
+            </script>
+            <script>
+                $(document).on('click', '.approve-product', function (e) {
+                    e.preventDefault();
+                    let $button = $('#approve-btn');
+                    let productId = $(this).data('id');
+                    let status = $(this).data('status');
+
+                    $.ajax({
+                        url: "{{ route('products.approval') }}",
+                        type: "PATCH",
+                        data: {
+                            id: productId,
+                            status: status,
+                            _token: "{{ csrf_token() }}" 
+                        },
+                        success: function (response) {
+                            if(response.status == 'success'){
+                                $('#modal-sm').modal('hide');
+                                $button.prop('disabled', true).text('Approved');
+                            }
+                        },
+                        error: function (xhr) {
+                            alert('An error occurred: ' + xhr.responseText);
+                        }
+                    });
+                });
+
+                $(document).on('click', '.comment-on-product', function (e) {
+                    e.preventDefault();
+                    let $button = $('#comment-btn');
+                    let comment = $('#comment').val();
+                    let productId = $(this).data('id');
+                    let status = $(this).data('status');
+
+                    alert(comment);
+                    $.ajax({
+                        url: "{{ route('products.approval') }}",
+                        type: "PATCH",
+                        data: {
+                            id: productId,
+                            status: status,
+                            comment: comment,
+                            _token: "{{ csrf_token() }}" 
+                        },
+                        success: function (response) {
+                            if(response.status == 'success'){
+                                $('#modal-lg').modal('hide');
+                                $button.prop('disabled', true).text('Rejected');
+                            }
+                        },
+                        error: function (xhr) {
+                            alert('An error occurred: ' + xhr.responseText);
+                        }
+                    });
+                });
             </script>
     </body>
 </html>

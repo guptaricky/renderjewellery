@@ -2,71 +2,94 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use Illuminate\Http\Request;
 use App\Models\Orders;
 use App\Models\OrderItems;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Razorpay\Api\Api;
 
 class OrderController extends Controller
 {
     public function createOrder(Request $request)
     {
-        $request->validate([
+        // print_r($request->user_id);
+   
+        $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
-            // 'shipping_address_id' => 'required|exists:user_addresses,id',
-            // 'billing_address_id' => 'required|exists:user_addresses,id',
             'payment_method' => 'required|string',
-            'items' => 'required|array',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
+            // 'items' => 'required|array',
+            // 'items.*.product_id' => 'required|exists:products,id',
+            // 'items.*.quantity' => 'required|integer|min:1',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
         try {
             // Start a database transaction
             DB::beginTransaction();
+
+            $cartItems = Cart::where('user_id', $request->user_id)->get();
+
+            if ($cartItems->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cart is empty.',
+                ], 400);
+            }
 
             // Calculate order totals
             $totalAmount = 0;
             $items = [];
 
-            foreach ($request->items as $item) {
-                $product = Product::findOrFail($item['product_id']);
-                $subtotal = $product->price * $item['quantity'];
+            foreach ($cartItems as $cartItem) {
+                $product = Product::findOrFail($cartItem->product_id);
+                $subtotal = $product->price * $cartItem->quantity;
                 $totalAmount += $subtotal;
-
+    
                 $items[] = [
                     'product_id' => $product->id,
                     'product_name' => $product->title,
                     'price' => $product->price,
-                    'quantity' => $item['quantity'],
+                    'quantity' => $cartItem->quantity,
                     'subtotal' => $subtotal,
-                    'attributes' => json_encode([
-                        'weight' => $product->weight,
-                        'dimensions' => $product->dimensions,
-                    ]),
                 ];
             }
 
-            // Create the order
+            // Razorpay order creation
+            $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+            $razorpayOrder = $api->order->create([
+                'receipt' => strtoupper(uniqid('ORD-')), // Optional: To add human-readable context for your reference
+                'amount' => $totalAmount * 100, // Amount in paise
+                'currency' => 'INR',
+            ]);
+
+            // Create the order in the database
             $order = Orders::create([
-                'order_number' => 'ORD-' . strtoupper(uniqid()),
+                'order_number' => $razorpayOrder['id'], // Using Razorpay's order_id as the sole identifier
                 'user_id' => $request->user_id,
                 'status' => 'pending',
                 'total_amount' => $totalAmount,
-                'final_total' => $totalAmount, // Adjust if there are discounts or taxes
-                'shipping_address_id' => $request->shipping_address_id,
-                'billing_address_id' => $request->billing_address_id,
+                'final_total' => $totalAmount,
                 'payment_method' => $request->payment_method,
                 'payment_status' => 'unpaid',
-                'currency' => 'USD',
+                'currency' => 'INR',
             ]);
 
-            // Create order items
             foreach ($items as $item) {
                 $order->items()->create($item);
             }
+
+            // Soft delete the cart items after order is created
+            Cart::where('user_id', $request->user_id)->delete();
 
             // Commit the transaction
             DB::commit();
@@ -74,12 +97,13 @@ class OrderController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Order created successfully!',
-                'order_id' => $order->id,
                 'order_number' => $order->order_number,
+                'razorpay_order_id' => $razorpayOrder['id'],
             ], 201);
+            // return redirect()->route('orders.order-summary', ['order_id' => $order->order_number]);
+
 
         } catch (\Exception $e) {
-            // Rollback the transaction on error
             DB::rollBack();
 
             return response()->json([
@@ -88,6 +112,15 @@ class OrderController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function showOrderSummary($orderNumber)
+    {
+        // Fetch the order from the database
+        $order = Orders::with('user')->where('order_number', $orderNumber)->firstOrFail();
+        $cart = Cart::with('product')->where('user_id', Auth::user()->id)->get();
+        $total = $cart->sum(fn($item) => $item->product->price * $item->quantity);
+        return view('orders/order-summary', ['order' => $order,'cart' => $cart, 'total' => $total]);
     }
 
     public function orderList()
@@ -114,12 +147,12 @@ class OrderController extends Controller
         try {
             $api->utility->verifyPaymentSignature($attributes);
 
-            $order = Orders::where('order_id', $orderId)->first();
-            $order->update(['status' => 'completed']);
+            $order = Orders::where('order_number', $orderId)->first();
+            $order->update(['status' => 'confirmed']);
 
             return response()->json(['success' => 'Payment verified successfully!']);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Payment verification failed!']);
+            return response()->json(['error' => 'Payment verification failed in verifyPayment api!', 'errormessage' => $e]);
         }
     }
 }
