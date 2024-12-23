@@ -148,7 +148,7 @@ class OrderController extends Controller
             $api->utility->verifyPaymentSignature($attributes);
 
             $order = Orders::where('order_number', $orderId)->first();
-            $order->update(['status' => 'confirmed']);
+            $order->update(['status' => 'confirmed', 'payment_status' => 'paid']);
 
             return response()->json(['success' => 'Payment verified successfully!']);
         } catch (\Exception $e) {
